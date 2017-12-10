@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import Firebase
+import FirebaseAuth
+import FirebaseDatabase
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -16,6 +19,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        FirebaseApp.configure()
+        
+        var viewControllers: [UIViewController] = []
+        let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        let chartView = mainSB.instantiateViewController(withIdentifier: "PersonalTask")
+        let personalView = mainSB.instantiateViewController(withIdentifier : "Personal")
+        //let navigationController1 = UINavigationController(rootViewController: chartView)
+        let navigationController2 = UINavigationController(rootViewController: personalView)
+        chartView.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 1)
+        personalView.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 2)
+        
+        viewControllers.append(chartView)
+        viewControllers.append(navigationController2)
+        
+        let tabBarController = UITabBarController()
+        tabBarController.setViewControllers(viewControllers, animated: false)
+        
+        if let user = Auth.auth().currentUser {
+            let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
+            let userTasksData = Database.database().reference().child(setPath)
+            userTasksData.observe(.value , with:{snapshot in
+                if (snapshot.value as? [[String:Int]]) != nil {
+                    tabBarController.selectedIndex = 0
+                }else{
+                    tabBarController.selectedIndex = 1
+                }
+            } )
+        }
+        
+        window = UIWindow()
+        window?.rootViewController = tabBarController
+        window?.makeKeyAndVisible()
+
         return true
     }
 
