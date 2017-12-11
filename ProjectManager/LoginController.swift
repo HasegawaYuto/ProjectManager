@@ -15,6 +15,8 @@ class LoginController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTF: UITextField!
     @IBOutlet weak var passwordTF: UITextField!
     @IBOutlet weak var nameTF: UITextField!
+    
+    var tabBarCotroller : UITabBarController!
 
 
     @IBAction func handleCreateNewAccount(_ sender: Any) {
@@ -48,12 +50,13 @@ class LoginController: UIViewController, UITextFieldDelegate {
                         
                         //usersデータベースに保存
                         let postRef = Database.database().reference().child(Const.UsersPath)
-                        let postData = ["name": user.displayName]
+                        let postData = ["name": user.displayName,"mail":user.email]
                         postRef.child(user.uid).setValue(postData)
                         print("DEBUG_PRINT:usersに情報を保存")
                         
                         // 画面を閉じてViewControllerに戻る
                         self.dismiss(animated: true, completion: nil)
+                        self.loadTabBarController()
                     }
                 } else {
                     print("DEBUG_PRINT: displayNameの設定に失敗しました。")
@@ -79,10 +82,36 @@ class LoginController: UIViewController, UITextFieldDelegate {
                     
                     // 画面を閉じてViewControllerに戻る
                     self.dismiss(animated: true, completion: nil)
+                    self.loadTabBarController()
                 }
             }
         }
     }
+    
+    func loadTabBarController(){
+        print("DEBUG_PRINT:call loadTabBarController")
+        self.tabBarCotroller = AppDelegate.tabBarController
+        print("DEBUG_PRINT:set tabBarCotroller")
+        if Auth.auth().currentUser != nil {
+            print("DEBUG_PRINT:login yes")
+            let user = Auth.auth().currentUser!
+            let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
+            let userTasksData = Database.database().reference().child(setPath)
+            userTasksData.observe(.value , with:{snapshot in
+                print("DEBUG_PRINT:ch task exists")
+                if (snapshot.value as? [[String:Int]]) != nil {
+                    self.tabBarController?.selectedIndex = 0
+                    print("DEBUG_PRINT:task exists")
+                }else{
+                    self.tabBarController?.selectedIndex = 1
+                    print("DEBUG_PRINT:task  not exists")
+                }
+            } )
+        }
+        //let mainSB = UIStoryboard(name: "Main", bundle: nil)
+        self.view.window?.rootViewController = self.tabBarCotroller
+    }
+    
     
     @IBAction func handleLogInWithGitHub(_ sender: Any) {
     }

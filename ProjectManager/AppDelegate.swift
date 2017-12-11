@@ -15,12 +15,13 @@ import FirebaseDatabase
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    static var tabBarController = UITabBarController()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         
+        ////   TabbarControllerの定義
         var viewControllers: [UIViewController] = []
         let mainSB = UIStoryboard(name: "Main", bundle: nil)
         let chartView = mainSB.instantiateViewController(withIdentifier: "PersonalTask")
@@ -32,26 +33,37 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         viewControllers.append(chartView)
         viewControllers.append(navigationController2)
+
+        AppDelegate.tabBarController.setViewControllers(viewControllers, animated: false)
         
-        let tabBarController = UITabBarController()
-        tabBarController.setViewControllers(viewControllers, animated: false)
-        
-        if let user = Auth.auth().currentUser {
+        if Auth.auth().currentUser != nil {
+            let user = Auth.auth().currentUser!
             let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
             let userTasksData = Database.database().reference().child(setPath)
             userTasksData.observe(.value , with:{snapshot in
                 if (snapshot.value as? [[String:Int]]) != nil {
-                    tabBarController.selectedIndex = 0
+                    AppDelegate.tabBarController.selectedIndex = 0
                 }else{
-                    tabBarController.selectedIndex = 1
+                    AppDelegate.tabBarController.selectedIndex = 1
                 }
             } )
         }
         
+        ////  ログインコントローラーのインスタンス
+        let loginViewController = mainSB.instantiateViewController(withIdentifier: "Login")
+        
+        //// 表示の処理
         window = UIWindow()
-        window?.rootViewController = tabBarController
+        //window?.rootViewController = tabBarController
+        
+        /////このようにしてrootViewControllerを切り替えるのか？
+         if Auth.auth().currentUser == nil {
+            window?.rootViewController = loginViewController
+         }else{
+            window?.rootViewController = AppDelegate.tabBarController
+         }
+        
         window?.makeKeyAndVisible()
-
         return true
     }
 
