@@ -10,11 +10,16 @@
 		790A95661FD822EC00D59EA5 /* Const.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790A95651FD822EC00D59EA5 /* Const.swift */; };
 		790A95681FD8283D00D59EA5 /* Users.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790A95671FD8283D00D59EA5 /* Users.swift */; };
 		793D214D1FD5356700E77F59 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 793D214C1FD5356700E77F59 /* GoogleService-Info.plist */; };
+		7954FD401FE3E67D00ACFE0E /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7954FD3E1FE3E67D00ACFE0E /* TableViewCell.swift */; };
+		7954FD411FE3E67D00ACFE0E /* TableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7954FD3F1FE3E67D00ACFE0E /* TableViewCell.xib */; };
+		795AEB491FE10DB900F67981 /* ProjectTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795AEB481FE10DB900F67981 /* ProjectTaskController.swift */; };
+		795AEB4B1FE14EEF00F67981 /* AddTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795AEB4A1FE14EEF00F67981 /* AddTaskController.swift */; };
+		795AEB4D1FE2602700F67981 /* IdValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795AEB4C1FE2602700F67981 /* IdValue.swift */; };
+		795AEB4F1FE26A0100F67981 /* ChargerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 795AEB4E1FE26A0100F67981 /* ChargerController.swift */; };
 		7995C6071FD65FA100318A74 /* CreateProjectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C6061FD65FA100318A74 /* CreateProjectController.swift */; };
 		7995C6091FD6748000318A74 /* MemberController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C6081FD6748000318A74 /* MemberController.swift */; };
 		7995C60B1FD68D4D00318A74 /* InviteMemberController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */; };
 		7995C60D1FD6BA8100318A74 /* ProjectData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C60C1FD6BA8100318A74 /* ProjectData.swift */; };
-		79ADBA441FD536E80078DC23 /* BottomTabController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADBA431FD536E80078DC23 /* BottomTabController.swift */; };
 		79ADBA4A1FD53F120078DC23 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADBA491FD53F120078DC23 /* LoginController.swift */; };
 		79ADBA4C1FD5418B0078DC23 /* list-simple-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 79ADBA4B1FD5418B0078DC23 /* list-simple-7.png */; };
 		79ADBA4E1FD541910078DC23 /* man-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 79ADBA4D1FD541910078DC23 /* man-7.png */; };
@@ -25,9 +30,7 @@
 		79C7F9721FD517DD00FD8A9B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F9711FD517DD00FD8A9B /* Assets.xcassets */; };
 		79C7F9751FD517DD00FD8A9B /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 79C7F9731FD517DD00FD8A9B /* LaunchScreen.storyboard */; };
 		79E541FA1FD8DFD1000C3A35 /* IdBool.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E541F91FD8DFD1000C3A35 /* IdBool.swift */; };
-		79E541FC1FD8E17B000C3A35 /* IdInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E541FB1FD8E17B000C3A35 /* IdInt.swift */; };
 		79E541FE1FD8F8D1000C3A35 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E541FD1FD8F8D1000C3A35 /* Tasks.swift */; };
-		79E542001FD8FF4E000C3A35 /* Categorys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E541FF1FD8FF4E000C3A35 /* Categorys.swift */; };
 		79E542021FD922F8000C3A35 /* Projects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E542011FD922F8000C3A35 /* Projects.swift */; };
 		79E542041FDA6E34000C3A35 /* PersonalTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */; };
 		7CFD3E491669D728562BA878 /* Pods_ProjectManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0541DC9156187171A1256D0 /* Pods_ProjectManager.framework */; };
@@ -39,11 +42,16 @@
 		790A95651FD822EC00D59EA5 /* Const.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Const.swift; sourceTree = "<group>"; };
 		790A95671FD8283D00D59EA5 /* Users.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Users.swift; sourceTree = "<group>"; };
 		793D214C1FD5356700E77F59 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
+		7954FD3E1FE3E67D00ACFE0E /* TableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
+		7954FD3F1FE3E67D00ACFE0E /* TableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TableViewCell.xib; sourceTree = "<group>"; };
+		795AEB481FE10DB900F67981 /* ProjectTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectTaskController.swift; sourceTree = "<group>"; };
+		795AEB4A1FE14EEF00F67981 /* AddTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddTaskController.swift; sourceTree = "<group>"; };
+		795AEB4C1FE2602700F67981 /* IdValue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdValue.swift; sourceTree = "<group>"; };
+		795AEB4E1FE26A0100F67981 /* ChargerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChargerController.swift; sourceTree = "<group>"; };
 		7995C6061FD65FA100318A74 /* CreateProjectController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateProjectController.swift; sourceTree = "<group>"; };
 		7995C6081FD6748000318A74 /* MemberController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberController.swift; sourceTree = "<group>"; };
 		7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteMemberController.swift; sourceTree = "<group>"; };
 		7995C60C1FD6BA8100318A74 /* ProjectData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectData.swift; sourceTree = "<group>"; };
-		79ADBA431FD536E80078DC23 /* BottomTabController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BottomTabController.swift; sourceTree = "<group>"; };
 		79ADBA491FD53F120078DC23 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		79ADBA4B1FD5418B0078DC23 /* list-simple-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-simple-7.png"; sourceTree = "<group>"; };
 		79ADBA4D1FD541910078DC23 /* man-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-7.png"; sourceTree = "<group>"; };
@@ -56,9 +64,7 @@
 		79C7F9741FD517DD00FD8A9B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		79C7F9761FD517DD00FD8A9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		79E541F91FD8DFD1000C3A35 /* IdBool.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdBool.swift; sourceTree = "<group>"; };
-		79E541FB1FD8E17B000C3A35 /* IdInt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IdInt.swift; sourceTree = "<group>"; };
 		79E541FD1FD8F8D1000C3A35 /* Tasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
-		79E541FF1FD8FF4E000C3A35 /* Categorys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Categorys.swift; sourceTree = "<group>"; };
 		79E542011FD922F8000C3A35 /* Projects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projects.swift; sourceTree = "<group>"; };
 		79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalTaskController.swift; sourceTree = "<group>"; };
 		A0541DC9156187171A1256D0 /* Pods_ProjectManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProjectManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,13 +108,17 @@
 				79C7F96A1FD517DD00FD8A9B /* AppDelegate.swift */,
 				79C7F96C1FD517DD00FD8A9B /* ViewController.swift */,
 				79C7F96E1FD517DD00FD8A9B /* Main.storyboard */,
+				7954FD3E1FE3E67D00ACFE0E /* TableViewCell.swift */,
+				7954FD3F1FE3E67D00ACFE0E /* TableViewCell.xib */,
+				795AEB4E1FE26A0100F67981 /* ChargerController.swift */,
+				795AEB4A1FE14EEF00F67981 /* AddTaskController.swift */,
+				795AEB481FE10DB900F67981 /* ProjectTaskController.swift */,
 				79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */,
 				790A95671FD8283D00D59EA5 /* Users.swift */,
 				79E541F91FD8DFD1000C3A35 /* IdBool.swift */,
-				79E541FB1FD8E17B000C3A35 /* IdInt.swift */,
+				795AEB4C1FE2602700F67981 /* IdValue.swift */,
 				7995C60C1FD6BA8100318A74 /* ProjectData.swift */,
 				79E541FD1FD8F8D1000C3A35 /* Tasks.swift */,
-				79E541FF1FD8FF4E000C3A35 /* Categorys.swift */,
 				790A95651FD822EC00D59EA5 /* Const.swift */,
 				7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */,
 				7995C6081FD6748000318A74 /* MemberController.swift */,
@@ -116,7 +126,6 @@
 				79E542011FD922F8000C3A35 /* Projects.swift */,
 				79ADBA4F1FD580F10078DC23 /* PersonalController.swift */,
 				79ADBA491FD53F120078DC23 /* LoginController.swift */,
-				79ADBA431FD536E80078DC23 /* BottomTabController.swift */,
 				79C7F9711FD517DD00FD8A9B /* Assets.xcassets */,
 				79C7F9731FD517DD00FD8A9B /* LaunchScreen.storyboard */,
 				79C7F9761FD517DD00FD8A9B /* Info.plist */,
@@ -207,6 +216,7 @@
 			files = (
 				79ADBA4E1FD541910078DC23 /* man-7.png in Resources */,
 				79C7F9751FD517DD00FD8A9B /* LaunchScreen.storyboard in Resources */,
+				7954FD411FE3E67D00ACFE0E /* TableViewCell.xib in Resources */,
 				793D214D1FD5356700E77F59 /* GoogleService-Info.plist in Resources */,
 				79C7F9721FD517DD00FD8A9B /* Assets.xcassets in Resources */,
 				79ADBA4C1FD5418B0078DC23 /* list-simple-7.png in Resources */,
@@ -271,19 +281,21 @@
 			files = (
 				79E541FE1FD8F8D1000C3A35 /* Tasks.swift in Sources */,
 				7995C60D1FD6BA8100318A74 /* ProjectData.swift in Sources */,
+				795AEB4B1FE14EEF00F67981 /* AddTaskController.swift in Sources */,
 				79C7F96D1FD517DD00FD8A9B /* ViewController.swift in Sources */,
 				79E542021FD922F8000C3A35 /* Projects.swift in Sources */,
+				7954FD401FE3E67D00ACFE0E /* TableViewCell.swift in Sources */,
+				795AEB491FE10DB900F67981 /* ProjectTaskController.swift in Sources */,
 				7995C6091FD6748000318A74 /* MemberController.swift in Sources */,
 				7995C60B1FD68D4D00318A74 /* InviteMemberController.swift in Sources */,
 				79E541FA1FD8DFD1000C3A35 /* IdBool.swift in Sources */,
-				79E542001FD8FF4E000C3A35 /* Categorys.swift in Sources */,
+				795AEB4F1FE26A0100F67981 /* ChargerController.swift in Sources */,
 				790A95661FD822EC00D59EA5 /* Const.swift in Sources */,
 				79E542041FDA6E34000C3A35 /* PersonalTaskController.swift in Sources */,
 				79ADBA4A1FD53F120078DC23 /* LoginController.swift in Sources */,
 				79ADBA501FD580F10078DC23 /* PersonalController.swift in Sources */,
+				795AEB4D1FE2602700F67981 /* IdValue.swift in Sources */,
 				79C7F96B1FD517DD00FD8A9B /* AppDelegate.swift in Sources */,
-				79ADBA441FD536E80078DC23 /* BottomTabController.swift in Sources */,
-				79E541FC1FD8E17B000C3A35 /* IdInt.swift in Sources */,
 				7995C6071FD65FA100318A74 /* CreateProjectController.swift in Sources */,
 				790A95681FD8283D00D59EA5 /* Users.swift in Sources */,
 			);

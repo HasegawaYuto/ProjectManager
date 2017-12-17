@@ -20,7 +20,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
 
 
     @IBAction func handleCreateNewAccount(_ sender: Any) {
-        if let email = emailTF.text, let password = passwordTF.text, let name=nameTF.text {
+        if let email = emailTF.text, let password = passwordTF.text, let name = nameTF.text {
             
             // アドレスとパスワードと表示名のいずれかでも入力されていない時は何もしない
             if email.characters.isEmpty || password.characters.isEmpty || name.characters.isEmpty {
@@ -49,13 +49,16 @@ class LoginController: UIViewController, UITextFieldDelegate {
                         print("DEBUG_PRINT: [displayName = \(String(describing: user.displayName))]の設定に成功しました。")
                         
                         //usersデータベースに保存
-                        let postRef = Database.database().reference().child(Const.UsersPath)
+                        print("DEBUG_PRINT:will save users")
+                        let postRef = Database.database().reference().child(Const.UsersPath).child(user.uid)
+                        print("DEBUG_PRINT:set users ref")
                         let postData = ["name": user.displayName,"mail":user.email]
-                        postRef.child(user.uid).setValue(postData)
+                        print("DEBUG_PRINT:set users data")
+                        postRef.setValue(postData)
                         print("DEBUG_PRINT:usersに情報を保存")
                         
                         // 画面を閉じてViewControllerに戻る
-                        self.dismiss(animated: true, completion: nil)
+                        //self.dismiss(animated: true, completion: nil)
                         self.loadTabBarController()
                     }
                 } else {
@@ -70,18 +73,19 @@ class LoginController: UIViewController, UITextFieldDelegate {
             
             // アドレスとパスワード名のいずれかでも入力されていない時は何もしない
             if email.characters.isEmpty || password.characters.isEmpty {
+                print("DEBUG_PRINT:empty")
                 return
             }
             
             Auth.auth().signIn(withEmail: email, password: password) { user, error in
                 if let error = error {
-                    print("DEBUG_PRINT: " + error.localizedDescription)
+                    print("DEBUG_PRINT:error: " + error.localizedDescription)
                     return
                 } else {
                     print("DEBUG_PRINT: ログインに成功しました。")
                     
                     // 画面を閉じてViewControllerに戻る
-                    self.dismiss(animated: true, completion: nil)
+                    //self.dismiss(animated: true, completion: nil)
                     self.loadTabBarController()
                 }
             }
@@ -90,26 +94,36 @@ class LoginController: UIViewController, UITextFieldDelegate {
     
     func loadTabBarController(){
         print("DEBUG_PRINT:call loadTabBarController")
-        self.tabBarCotroller = AppDelegate.tabBarController
+        //self.tabBarCotroller = AppDelegate.tabBarController
         print("DEBUG_PRINT:set tabBarCotroller")
         if Auth.auth().currentUser != nil {
             print("DEBUG_PRINT:login yes")
             let user = Auth.auth().currentUser!
             let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
             let userTasksData = Database.database().reference().child(setPath)
-            userTasksData.observe(.value , with:{snapshot in
+            userTasksData.observeSingleEvent(of: .value , with:{snapshot in
                 print("DEBUG_PRINT:ch task exists")
                 if (snapshot.value as? [[String:Int]]) != nil {
-                    self.tabBarController?.selectedIndex = 0
+                    AppDelegate.tabBarController.selectedIndex = 0
                     print("DEBUG_PRINT:task exists")
                 }else{
-                    self.tabBarController?.selectedIndex = 1
+                    AppDelegate.tabBarController.selectedIndex = 1
                     print("DEBUG_PRINT:task  not exists")
                 }
+                self.view.window?.rootViewController = AppDelegate.tabBarController
+                self.dismiss(animated: true, completion: nil)
             } )
         }
-        //let mainSB = UIStoryboard(name: "Main", bundle: nil)
-        self.view.window?.rootViewController = self.tabBarCotroller
+        /*
+        print("DEBUG_PRINT:will view TabBarController")
+        AppDelegate.tabBarController.selectedIndex = 1
+        print("DEBUG_PRINT:set tab index")
+        self.dismiss(animated: true, completion: nil)
+        print("DEBUG_PRINT:dismiss modal")
+        self.view.window?.rootViewController = AppDelegate.tabBarController
+        print("DEBUG_PRINT:rootController TabBar")
+        self.view.window?.makeKeyAndVisible()
+        */
     }
     
     
@@ -131,23 +145,12 @@ class LoginController: UIViewController, UITextFieldDelegate {
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        print("DEBUG_PRINT:pushエンター")
+        //print("DEBUG_PRINT:pushエンター")
         
         // 改行ボタンが押されたらKeyboardを閉じる処理.
         textField.resignFirstResponder()
-        print("DEBUG_PRINT:キーボードしまう")
+        //print("DEBUG_PRINT:キーボードしまう")
         return true
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }

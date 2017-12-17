@@ -22,50 +22,81 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     @IBOutlet weak var memberT: UITableView!
     @IBOutlet weak var addMemberButton: UIBarButtonItem!
+    
+    override func viewWillDisappear(_ animated: Bool){
+        super.viewWillDisappear(animated)
+        let setPath = Const.ProjectsPath + "/" + self.projectId + "/members"
+        Database.database().reference().child(setPath).removeAllObservers()
+        for uid in self.memberIds {
+            Database.database().reference().child(Const.UsersPath).child(uid).child("name").removeAllObservers()
+        }
+        self.memberIds = []
+        self.memberType = [:]
+        self.memberNames = [:]
+        self.memberT.reloadData()
+        self.observe = false
+        //print("DEBUG_PRINT:call viewWillDisappear")
+    }
 
     @IBAction func handleInviteButton(_ sender: Any) {
-        let memberViewController = self.storyboard?.instantiateViewController(withIdentifier: "Invite")
-        navigationController?.pushViewController(memberViewController!, animated: true)
-        print("DEBUG_PRINT:push Invite")
+        let inviteViewController = self.storyboard?.instantiateViewController(withIdentifier: "Invite") as? InviteMemberController
+        inviteViewController?.projectId = self.projectId
+        navigationController?.pushViewController(inviteViewController!, animated: true)
+        //print("DEBUG_PRINT:push Invite")
+    }
+    
+    func superReload(){
+        let flag1 = self.memberIds.count == self.memberNames.count
+        let flag2 = self.memberIds.count == self.memberType.count
+        if flag1 && flag2 {
+            self.memberT.reloadData()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //print("DEBUG_PRINT:\(self.projectId):\(self.isManager)")
         if !isManager {
             self.addMemberButton.isEnabled = false
         }
         
         if self.observe == false {
-            //print("DEBUG_PRINT:set observe")
             let setPath = Const.ProjectsPath + "/" + self.projectId + "/members"
             let memberDataRef = Database.database().reference().child(setPath)
             memberDataRef.observe(.childAdded,with:{snapshot in
-                //print("DEBUG_PRINT:childAdded")
-                let userId = snapshot.key
-                self.memberIds.insert( userId , at:0)
-                self.memberType[userId] = snapshot.value as? Bool
-                let userDataRef = Database.database().reference().child(Const.UsersPath).child(snapshot.key)
-                userDataRef.child("name").observe(.value,with:{snapshot in
-                    self.memberNames[userId] = snapshot.value as? String
-                    //print("DEBUG_PRINT:memberName:\(self.memberNames.count)")
-                    if self.memberIds.count <= self.memberNames.count {
-                        self.memberT.reloadData()
-                        //print("DEBUG_PRINT:reload")
-                    }
+                let userBool = IdBool(booldata:snapshot)
+                let userId = userBool.id!
+                self.memberType[userId] = userBool.bool
+                let userDataRef = Database.database().reference().child(Const.UsersPath).child(userId)
+                userDataRef.observe(.value,with:{snapshot in
+                    let userData = Users(userdata:snapshot)
+                    self.memberNames[userId] = userData.name!
+                    self.memberIds.insert( userId , at:0)
+                    self.superReload()
                 })
-                //print("DEBUG_PRINT:memberIds:\(self.memberIds.count)")
             })
+            
+            memberDataRef.observe(.childRemoved,with:{snapshot in
+                let userBool = IdBool(booldata:snapshot)
+                let index = self.memberIds.index(of:userBool.id!)
+                self.memberIds.remove(at:index!)
+                self.memberNames.removeValue(forKey:userBool.id!)
+                self.memberType.removeValue(forKey:userBool.id!)
+                Database.database().reference().child(Const.UsersPath).child(userBool.id!).removeAllObservers()
+                self.superReload()
+            })
+            
             memberDataRef.observe(.childChanged,with:{snapshot in
-                self.memberType[snapshot.key] = snapshot.value as? Bool
-                //print("DEBUG_PRINT:memberType:\(snapshot.key)->\(snapshot.value as! String)")
+                let userBool = IdBool(booldata:snapshot)
+                self.memberType[userBool.id!] = userBool.bool
+                self.superReload()
             })
+            
             self.observe = true
         }
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.memberNames.count
+        return self.memberIds.count
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
@@ -78,20 +109,41 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
             self.buttonLabel = "To Joinner"
         }
         let typeButton = UITableViewRowAction(style: .normal, title: self.buttonLabel) { (action, index) -> Void in
-            //let createProjectViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectDetail") as! CreateProjectController
-            //createProjectViewController.projectId = self.theProjectId!
-            //self.navigationController?.pushViewController(createProjectViewController, animated: true)
-            //self.array.remove(at: indexPath.row)
-            //tableView.deleteRows(at: [indexPath], with: .fade)
-            //print("DEBUG_PRINT:\(self.theProjectId!):detail処理")
+            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + memberId
+            let userPath = Const.UsersPath + "/" + memberId + "/projects/" + self.projectId
+            let memberDataRef = Database.database().reference().child(setPath)
+            let userDataRef = Database.database().reference().child(userPath)
+            if memberBool! {
+                memberDataRef.setValue(false)
+                userDataRef.setValue(false)
+            }else{
+                memberDataRef.setValue(true)
+                userDataRef.setValue(true)
+            }
         }
         if !memberBool! {
             typeButton.backgroundColor = UIColor.yellow
+            //typeButton.textColor = UIColor.black
         }else{
             typeButton.backgroundColor = UIColor.clear
         }
         
-        return [typeButton]
+        let excludeButton = UITableViewRowAction(style: .normal, title: "exclude") { (action, index) -> Void in
+            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + memberId
+            let userPath = Const.UsersPath + "/" + memberId + "/projects/" + self.projectId
+            let memberDataRef = Database.database().reference().child(setPath)
+            let userDataRef = Database.database().reference().child(userPath)
+            memberDataRef.removeValue()
+            userDataRef.removeValue()
+            print("DEBUG_PRINT:exclude")
+        }
+        excludeButton.backgroundColor = UIColor.red
+        
+        if self.isManager {
+            return [excludeButton,typeButton]
+        }else{
+            return []
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

@@ -11,17 +11,18 @@ import Firebase
 import FirebaseDatabase
 
 class Projects: NSObject {
-    //var id: String?
+    var id: String?
     var title: String?
     var detail:String?
     var startDate: NSDate?
     var endDate: NSDate?
-    var members: [IdBool]=[]
-    //var task:[]=[]
-    var category:[String]=[]
+    var members: [String:Bool]=[:]
+    var tasks:[String:Double]=[:]
+    //var category:[String]=[]
     
     init(projectdata: DataSnapshot) {
-        //self.id = projectdata.key
+        //print("DEBUG_PRINT:get project data")
+        self.id = projectdata.key
         
         let valueDictionary = projectdata.value as! [String: AnyObject]
         
@@ -34,16 +35,12 @@ class Projects: NSObject {
         let eDate = valueDictionary["endDate"] as? String
         self.endDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(eDate!)!)
         
-        if let members = valueDictionary["members"] as? [IdBool] {
+        if let members = valueDictionary["members"] as? [String:Bool] {
             self.members = members
         }
         
-        //if let tasks = valueDictionary["tasks"] as? [TaskData] {
-        //    self.task = tasks
-        //}
-        
-        if let category = valueDictionary["category"] as? [String] {
-            self.category = category
+        if let tasks = valueDictionary["tasks"] as? [String:Double] {
+            self.tasks = tasks
         }
     }
 }

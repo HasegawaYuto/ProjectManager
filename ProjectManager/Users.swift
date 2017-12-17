@@ -13,25 +13,27 @@ import FirebaseDatabase
 class Users: NSObject {
     var id:String?
     var name:String?
-    //var uid:String?
-    var invited:[String]=[]
-    var projects:[IdBool]=[] // ex IdBool=["1":true]
-    var tasks:[IdInt]=[] // ex IdInt = ["1":36]
+    var mail:String?
+    var invited:[String:Bool]=[:]
+    var projects:[String:Bool]=[:] // ex IdBool=["1":true]
+    var tasks:[String:Double]=[:] // ex IdInt = ["1":36]
     
     init(userdata: DataSnapshot){
         self.id = userdata.key
         
         let valueDictionary = userdata.value as! [String: AnyObject]
         self.name = valueDictionary["name"] as? String
-        self.id = valueDictionary["id"] as? String
+        self.mail = valueDictionary["mail"] as? String
         
-        if let invited = valueDictionary["invite"] as? [String]{
-            self.invited = invited
+        if let inviteds = valueDictionary["invited"] as? [String:Bool]{
+            self.invited = inviteds
         }
-        if let projects = valueDictionary["projects"] as? [IdBool]{
+
+        if let projects = valueDictionary["projects"] as? [String:Bool]{
             self.projects = projects
         }
-        if let tasks = valueDictionary["tasks"] as? [IdInt]{
+        
+        if let tasks = valueDictionary["tasks"] as? [String:Double]{
             self.tasks = tasks
         }
     }

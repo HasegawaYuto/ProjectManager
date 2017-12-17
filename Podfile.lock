@@ -1,4 +1,5 @@
 PODS:
+  - Cosmos (11.0.3)
   - Firebase (4.1.0):
     - Firebase/Core (= 4.1.0)
   - Firebase/Auth (4.1.0):
@@ -46,12 +47,14 @@ PODS:
   - nanopb/encode (0.3.8)
 
 DEPENDENCIES:
+  - Cosmos (~> 11.0)
   - Firebase (= 4.1.0)
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
 
 SPEC CHECKSUMS:
+  Cosmos: eb506859929f4add2d2aec822a27efb2f718a95d
   Firebase: ebebf41db7f10e0c7668b6eaaa857fbe599aa478
   FirebaseAnalytics: 76f754d37ca5b04f36856729b6af3ca0152d1069
   FirebaseAuth: 8d1d2389cf82f891048d6d50d27d044f55ae09a6
@@ -63,6 +66,6 @@ SPEC CHECKSUMS:
   leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
 
-PODFILE CHECKSUM: 5389c2fc4981685d8425982c932b7792aae2b2db
+PODFILE CHECKSUM: 850d2380813863c8cbe65e05f6dc31f931187d3e
 
 COCOAPODS: 1.1.1
