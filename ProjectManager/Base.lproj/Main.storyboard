@@ -14,7 +14,7 @@
         <!--Personal-->
         <scene sceneID="BCA-oF-82z">
             <objects>
-                <viewController storyboardIdentifier="Personal" id="My8-xP-Rfx" customClass="PersonalController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Personal" useStoryboardIdentifierAsRestorationIdentifier="YES" id="My8-xP-Rfx" customClass="PersonalController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="ha1-Qs-Grc"/>
                         <viewControllerLayoutGuide type="bottom" id="D0z-ZJ-an1"/>
@@ -121,7 +121,7 @@
         <!--Title-->
         <scene sceneID="AyF-uF-oVK">
             <objects>
-                <viewController storyboardIdentifier="ProjectTask" id="wtY-OR-Ohe" customClass="ProjectTaskController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ProjectTask" useStoryboardIdentifierAsRestorationIdentifier="YES" id="wtY-OR-Ohe" customClass="ProjectTaskController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="p1j-8O-iyg"/>
                         <viewControllerLayoutGuide type="bottom" id="SgM-cF-XmE"/>
@@ -139,11 +139,11 @@
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="trailing" secondItem="sbj-rt-gC3" secondAttribute="trailing" id="D1d-fs-RRf"/>
-                                    <constraint firstItem="sbj-rt-gC3" firstAttribute="leading" secondItem="g1p-pa-3B0" secondAttribute="leading" id="Gpq-TJ-XZc"/>
+                                    <constraint firstAttribute="trailing" secondItem="sbj-rt-gC3" secondAttribute="trailing" id="63s-Y2-ugK"/>
+                                    <constraint firstItem="sbj-rt-gC3" firstAttribute="leading" secondItem="g1p-pa-3B0" secondAttribute="leading" id="G8P-30-djL"/>
                                     <constraint firstAttribute="height" constant="10" id="JyE-eS-En8"/>
-                                    <constraint firstAttribute="bottom" secondItem="sbj-rt-gC3" secondAttribute="bottom" id="vZU-x8-NHD"/>
-                                    <constraint firstItem="sbj-rt-gC3" firstAttribute="top" secondItem="g1p-pa-3B0" secondAttribute="top" id="ws2-NV-r3X"/>
+                                    <constraint firstAttribute="bottom" secondItem="sbj-rt-gC3" secondAttribute="bottom" id="mgd-GV-Lnd"/>
+                                    <constraint firstItem="sbj-rt-gC3" firstAttribute="top" secondItem="g1p-pa-3B0" secondAttribute="top" id="rXY-BY-mvY"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kUn-dI-XoM">
@@ -218,6 +218,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addTaskButton" destination="wem-Z1-mep" id="jCn-PY-DzQ"/>
+                        <outlet property="progressLabel" destination="kUn-dI-XoM" id="iWo-Ff-CF4"/>
+                        <outlet property="projectProgress" destination="sbj-rt-gC3" id="mvZ-EZ-Eff"/>
                         <outlet property="projectTitle" destination="dkc-1i-j7o" id="Ety-HP-gpu"/>
                         <outlet property="taskTable" destination="VJQ-5I-evu" id="h3d-UL-D3E"/>
                     </connections>
@@ -388,7 +390,7 @@
         <!--Charger-->
         <scene sceneID="Rm0-Wp-DPh">
             <objects>
-                <viewController storyboardIdentifier="Charger" id="81A-Zb-KIy" customClass="ChargerController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Charger" useStoryboardIdentifierAsRestorationIdentifier="YES" id="81A-Zb-KIy" customClass="ChargerController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="pjY-6r-Jjg"/>
                         <viewControllerLayoutGuide type="bottom" id="1Iw-lL-ReN"/>
@@ -401,17 +403,8 @@
                                 <rect key="frame" x="0.0" y="30" width="375" height="44"/>
                                 <textInputTraits key="textInputTraits"/>
                             </searchBar>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NCf-sf-sFd">
-                                <rect key="frame" x="26" y="611" width="323" height="36"/>
-                                <color key="backgroundColor" red="1" green="0.52630898010000005" blue="0.82355086320000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <state key="normal" title="Set"/>
-                                <connections>
-                                    <action selector="handleSetButton:" destination="81A-Zb-KIy" eventType="touchUpInside" id="wgs-d0-gSh"/>
-                                </connections>
-                            </button>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="iWC-Eb-mav">
-                                <rect key="frame" x="26" y="94" width="323" height="497"/>
+                                <rect key="frame" x="26" y="94" width="323" height="553"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" restorationIdentifier="Charger" selectionStyle="default" indentationWidth="10" reuseIdentifier="Charger" id="dBG-90-6VS">
@@ -429,14 +422,11 @@
                         <constraints>
                             <constraint firstItem="iWC-Eb-mav" firstAttribute="leading" secondItem="aXP-Nn-Vqm" secondAttribute="leadingMargin" constant="10" id="CXR-9P-VXJ"/>
                             <constraint firstItem="syF-GF-34v" firstAttribute="top" secondItem="pjY-6r-Jjg" secondAttribute="bottom" constant="10" id="Gkr-bD-3S7"/>
-                            <constraint firstAttribute="trailingMargin" secondItem="NCf-sf-sFd" secondAttribute="trailing" constant="10" id="LLi-bh-wUu"/>
-                            <constraint firstItem="1Iw-lL-ReN" firstAttribute="top" secondItem="NCf-sf-sFd" secondAttribute="bottom" constant="20" id="Lmh-am-2hF"/>
                             <constraint firstItem="iWC-Eb-mav" firstAttribute="top" secondItem="syF-GF-34v" secondAttribute="bottom" constant="20" id="URH-h7-KQu"/>
+                            <constraint firstItem="1Iw-lL-ReN" firstAttribute="top" secondItem="iWC-Eb-mav" secondAttribute="bottom" constant="20" id="Vhy-V0-XLm"/>
                             <constraint firstAttribute="trailing" secondItem="syF-GF-34v" secondAttribute="trailing" id="ZXc-K3-xDY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="iWC-Eb-mav" secondAttribute="trailing" constant="10" id="bGE-5e-ryV"/>
                             <constraint firstItem="syF-GF-34v" firstAttribute="leading" secondItem="aXP-Nn-Vqm" secondAttribute="leading" id="cWi-Uz-7jf"/>
-                            <constraint firstItem="NCf-sf-sFd" firstAttribute="top" secondItem="iWC-Eb-mav" secondAttribute="bottom" constant="20" id="nWg-i4-lbm"/>
-                            <constraint firstItem="NCf-sf-sFd" firstAttribute="leading" secondItem="aXP-Nn-Vqm" secondAttribute="leadingMargin" constant="10" id="viP-uh-FgC"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Charger" id="UjX-SY-Ufa"/>
@@ -581,6 +571,7 @@
                         <outlet property="SaveButton" destination="sPM-WZ-e7z" id="ncF-SN-MbC"/>
                         <outlet property="detailTV" destination="7kX-gb-5dN" id="Z2E-Pv-H3q"/>
                         <outlet property="endDateP" destination="4wC-h9-qlC" id="R2E-Qv-PBr"/>
+                        <outlet property="memberButton" destination="KhH-wa-R4p" id="Ndx-4y-v9m"/>
                         <outlet property="startDateP" destination="E6n-PI-0AQ" id="9mR-qj-CHM"/>
                         <outlet property="titleTF" destination="gXZ-Mf-PVh" id="tZ1-KJ-p0b"/>
                     </connections>
@@ -592,7 +583,7 @@
         <!--Member-->
         <scene sceneID="ioj-xF-gCS">
             <objects>
-                <viewController storyboardIdentifier="Member" id="06k-fX-XFe" customClass="MemberController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="Member" useStoryboardIdentifierAsRestorationIdentifier="YES" id="06k-fX-XFe" customClass="MemberController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dbn-ye-ktg"/>
                         <viewControllerLayoutGuide type="bottom" id="2YD-62-c55"/>

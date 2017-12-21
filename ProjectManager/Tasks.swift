@@ -22,7 +22,7 @@ class Tasks: NSObject {
     var status:Double?
     var chargers:[String:Bool]=[:]
 
-    init(taskdata: DataSnapshot){
+    init(_ taskdata: DataSnapshot){
         
         let valueDictionary = taskdata.value as! [String: AnyObject]
         self.id = taskdata.key
@@ -38,6 +38,7 @@ class Tasks: NSObject {
         self.detail = valueDictionary["detail"] as? String
         self.importance = valueDictionary["importance"] as? Double
         self.status = valueDictionary["status"] as? Double
+        
         if let chargers = valueDictionary["chargers"] as? [String:Bool]{
             self.chargers = chargers
         }

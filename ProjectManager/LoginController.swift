@@ -99,11 +99,11 @@ class LoginController: UIViewController, UITextFieldDelegate {
         if Auth.auth().currentUser != nil {
             print("DEBUG_PRINT:login yes")
             let user = Auth.auth().currentUser!
-            let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
-            let userTasksData = Database.database().reference().child(setPath)
+            let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
             userTasksData.observeSingleEvent(of: .value , with:{snapshot in
                 print("DEBUG_PRINT:ch task exists")
-                if (snapshot.value as? [[String:Int]]) != nil {
+                let datas = snapshot.children.allObjects as [Any]
+                if datas.count > 0 {
                     AppDelegate.tabBarController.selectedIndex = 0
                     print("DEBUG_PRINT:task exists")
                 }else{

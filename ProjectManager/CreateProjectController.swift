@@ -18,9 +18,9 @@ class CreateProjectController: UIViewController {
     @IBOutlet weak var startDateP: UIDatePicker!
     @IBOutlet weak var endDateP: UIDatePicker!
     @IBOutlet weak var SaveButton: UIButton!
+    @IBOutlet weak var memberButton: UIBarButtonItem!
     
     var projectId : String!
-    let user = Auth.auth().currentUser!
     var observe :Bool = false
     var isManager : Bool = false
     var mode:Int = 0
@@ -34,6 +34,23 @@ class CreateProjectController: UIViewController {
         self.saveProject()
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        self.SaveButton.isEnabled = false
+        self.memberButton.isEnabled = false
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        
+        self.SaveButton.isEnabled = true
+        self.memberButton.isEnabled = true
+        
+        textField.resignFirstResponder()
+        
+        return true
+    }
+    
+    
+    
     @IBAction func handleMemberButton(_ sender: Any) {
         self.saveProject()
         
@@ -45,38 +62,50 @@ class CreateProjectController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        print("DEBUG_PRINT:[create p] call viewWillAppear")
         super.viewWillAppear(animated)
-        if self.projectId != nil {
-            if self.observe == false {
-                let setPath = Const.ProjectsPath + "/" + self.projectId
-                let projectDataRef = Database.database().reference().child(setPath)
-                projectDataRef.observeSingleEvent(of: .value , with:{snapshot in
-                    let theProject = Projects(projectdata:snapshot)
-                        self.titleTF.text = theProject.title!
-                        self.oldTitle = theProject.title!
-                        self.detailTV.text = theProject.detail!
-                        self.oldDetail = theProject.detail!
-                        self.startDateP.date = theProject.startDate! as Date
-                        let sDate = theProject.startDate?.timeIntervalSinceReferenceDate
-                        self.oldStartDate = String(sDate!)
-                        self.endDateP.date = theProject.endDate! as Date
-                        let eDate = theProject.endDate?.timeIntervalSinceReferenceDate
-                        self.oldStartDate = String(eDate!)
-                        if theProject.members.count > 0{
-                            self.mode = 1
-                            if let theUserBool = theProject.members[self.user.uid] {
-                                self.isManager = theUserBool
-                                if self.isManager == false{
-                                    self.SaveButton.isEnabled = false
-                                    self.SaveButton.isHidden = true
-                                }
-                            }
-                        }
+        if self.observe == false {
+            if self.projectId != nil {
+                print("DEBUG_PRINT:[create p] self.projectId != nil")
+                
+                let projectRef = Database.database().reference().child(Const.ProjectsPath).child(self.projectId!)
+                
+                
+                projectRef.observe(.value,with:{snapshot in
+                    print("DEBUG_PRINT:[create p] call value:\(snapshot)")
+                    let theProject = Projects(snapshot)
+                    Const.addProjectData(theProject)
                 })
                 
-                self.observe = true
+                let oldproject = Const.projects.filter({ $0.id == self.projectId! })[0]
+                self.titleTF.text = oldproject.title!
+                self.oldTitle = oldproject.title!
                 
+                self.detailTV.text = oldproject.detail!
+                self.oldDetail = oldproject.detail!
+                
+                self.startDateP.date = oldproject.startDate! as Date
+                let sDate = oldproject.startDate?.timeIntervalSinceReferenceDate
+                self.oldStartDate = String(sDate!)
+                
+                self.endDateP.date = oldproject.endDate! as Date
+                let eDate = oldproject.endDate?.timeIntervalSinceReferenceDate
+                self.oldStartDate = String(eDate!)
+                
+                if oldproject.members.count > 0{
+                    self.mode = 1
+                    if let theUserBool = oldproject.members[Const.user.id!] {
+                        self.isManager = theUserBool == 2
+                        if self.isManager == false{
+                            self.SaveButton.isEnabled = false
+                            self.SaveButton.isHidden = true
+                        }
+                    }
+                }
+            }else{
+                print("DEBUG_PRINT:[create p] self.projectId == nil")
             }
+            self.observe = true
         }
     }
     
@@ -84,7 +113,7 @@ class CreateProjectController: UIViewController {
         //super.viewWillDisappear(animated)
         print("DEBUG_PRINT:call viewWillDisappear Create")
         super.viewWillDisappear(animated)
-            self.observe = false
+        self.observe = false
     }
     
     override func viewDidLoad() {
@@ -110,9 +139,19 @@ class CreateProjectController: UIViewController {
             print("DEBUG_PRINT:do save")
             
             if self.projectId == nil {
-                let setPath = Const.UsersPath + "/" + self.user.uid + "/projects"
+                let setPath = Const.UsersPath + "/" + Const.user.id! + "/projects"
                 let userProjects = Database.database().reference().child(setPath)
                 self.projectId = userProjects.childByAutoId().key as String
+                
+                
+                let projectRef = Database.database().reference().child(Const.ProjectsPath).child(self.projectId!)
+                
+                projectRef.observe(.value,with:{snapshot in
+                    print("DEBUG_PRINT:[create p] call value:\(snapshot)")
+                    let theProject = Projects(snapshot)
+                    Const.addProjectData(theProject)
+                })
+                self.observe = true
             }
             
             let sDate = self.startDateP.date.timeIntervalSinceReferenceDate
@@ -122,19 +161,24 @@ class CreateProjectController: UIViewController {
             if self.mode == 0 {
                 
                 print("DEBUG_PRINT:create mode")
-                let postData = ["title": self.titleTF.text!, "detail": self.detailTV.text!, "startDate":String(sDate),"endDate":String(eDate),"members":[user.uid :true]] as [String : Any]
-                postRef.child(projectId).setValue(postData)
-                let setPath = Const.UsersPath + "/" + self.user.uid + "/projects"
+                
+                let postData = ["title": self.titleTF.text!, "detail": self.detailTV.text!, "startDate":String(sDate),"endDate":String(eDate),"members":[Const.user.id! :2]] as [String : Any]
+                postRef.child(self.projectId!).setValue(postData)
+                
+                let setPath = Const.UsersPath + "/" + Const.user.id! + "/projects"
                 let userProjectsRef = Database.database().reference().child(setPath)
-                userProjectsRef.child(self.projectId).setValue(true)
+                userProjectsRef.child(self.projectId!).setValue(2)
+                
                 self.mode = 1
+                
+                print("DEBUG_PRINT:save done")
                 
             }else{
                 
                 print("DEBUG_PRINT:update mode")
                 let postData = ["title": self.titleTF.text!, "detail": self.detailTV.text!, "startDate":String(sDate),"endDate":String(eDate)] as [String : Any]
                 postRef.child(self.projectId).updateChildValues(postData)
-                
+                print("DEBUG_PRINT:save done")
             }
             
             self.oldTitle = self.titleTF.text!

@@ -16,23 +16,17 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     @IBOutlet weak var sc: UISegmentedControl!
     @IBOutlet weak var tableV: UITableView!
     
-    //let user = Auth.auth().currentUser!
     var setPath :String?
-    var projectId : String?
+    //var projectId : String?
     var observeUserBool:Bool = false
     var observeProjectBool:Bool = false
     var observeInvitedBool:Bool = false
-    var projectsIds : [String] = []
-    var manageProjectsIds : [String] = []
-    var joinProjectsIds : [String] = []
-    var invitedProjectsIds : [String] = []
-    var projectTitles : [String:String]=[:]
+    //var projectsIds : [String] = []
+    var selectProjects:[Projects]=[]
     var projectType : Int = 0
-    var theProjectId : String!
-    var theProjectTitle : String!
+    //var theProjectId : String!
     
-    var projects:[String:Projects]=[:]
-    var userId :String!
+    //var projects:[String:Projects]=[:]
 
     var enterButton: UITableViewRowAction!
     var detailButton: UITableViewRowAction!
@@ -40,37 +34,21 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     var refuseButton: UITableViewRowAction!
 
     @IBAction func handleLogOut(_ sender: Any) {
-        self.setPath = Const.UsersPath + "/" + self.userId!
         print("DEBUG_PRINT:call log out")
         if self.observeUserBool {
-            Database.database().reference().child(self.setPath!).child("name").removeAllObservers()
+            Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
             print("DEBUG_PRINT:remove observer name")
             self.observeUserBool = false
         }
         if self.observeProjectBool {
-            Database.database().reference().child(self.setPath!).child("projects").removeAllObservers()
+            Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
             print("DEBUG_PRINT:remove observer projects")
-            for pid in self.projectsIds {
-                Database.database().reference().child(Const.ProjectsPath).child(pid).child("title").removeAllObservers()
-                print("DEBUG_PRINT:remove observer projects(\(pid)) title")
-            }
             
-            self.projectsIds = []
-            self.manageProjectsIds = []
-            self.joinProjectsIds = []
             self.observeProjectBool = false
         }
-        if self.observeInvitedBool {
-            Database.database().reference().child(self.setPath!).child("invited").removeAllObservers()
-            print("DEBUG_PRINT:remove observer invited")
-            self.invitedProjectsIds = []
-            self.observeInvitedBool = false
-            for pid in self.invitedProjectsIds {
-                Database.database().reference().child(Const.ProjectsPath).child(pid).child("title").removeAllObservers()
-                print("DEBUG_PRINT:remove observer projects(\(pid)) title")
-            }
-        }
-        self.projectTitles = [:]
+        Const.projects = []
+        Const.tasks = []
+        Const.users = []
         self.sc.selectedSegmentIndex = 0
         self.tableV.reloadData()
         
@@ -92,122 +70,81 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
         self.userNameTF.delegate = self
         self.tableV.delegate = self
         self.tableV.dataSource = self
-        print("DEBUG_PRINT:call viewDidload personal")
+        //print("DEBUG_PRINT:call viewDidload personal")
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
+        Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
+        self.observeUserBool = false
+        self.observeProjectBool = false
+        
+    }
+    
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("DEBUG_PRINT:call viewWillAppear personal")
+        //print("DEBUG_PRINT:call viewWillAppear personal")
         if let user = Auth.auth().currentUser {
-            self.userId = user.uid
-            ///////////  user名を取得
+            let userRef = Database.database().reference().child(Const.UsersPath).child(user.uid)
+            
             if !self.observeUserBool {
-                self.setPath = Const.UsersPath + "/" + self.userId!
-                let userNameRef = Database.database().reference().child(self.setPath!)
-                userNameRef.observeSingleEvent(of: .value , with : { snapshot in
-                    if snapshot.value != nil {
-                        let theUser = Users(userdata:snapshot)
-                        self.userNameTF.text = theUser.name!
+                
+                userRef.observe(.value,with:{snapshot in
+                    //print("DEBUG_PRINT:[personal] user data")
+                    let theUser = Users(snapshot)
+                    Const.user = theUser
+                    Const.addUserData(theUser)
+                    
+                    if self.userNameTF.text != Const.user.name! {
+                        self.userNameTF.text = Const.user.name!
                     }
+                    //self.tableV.reloadData()
                 })
                 self.observeUserBool = true
+                
             }
             
-            /////////////   プロジェクト名を取得
-            let projectIdRef = Database.database().reference().child(self.setPath!)
-            /////////  user->projects
             if !self.observeProjectBool {
-                /////////   childAdded
-                projectIdRef.child("projects").observe( .childAdded , with:{ snapshot in
-                    let projectBool = IdBool(booldata:snapshot)
-                    if let bool = projectBool.bool , let pid = projectBool.id{
-                        if bool {
-                            self.manageProjectsIds.insert(pid ,at:0)
-                        }else{
-                            self.joinProjectsIds.insert(pid ,at:0)
-                        }
-                        self.projectsIds.insert(pid ,at:0)
-                        let setNewPath = Const.ProjectsPath + "/" + pid
-                        let projectTitleRef = Database.database().reference().child(setNewPath)
-                        projectTitleRef.observe(.value,with:{snapshot in
-                            let projectData = Projects(projectdata:snapshot)
-                            self.projectTitles[pid] = projectData.title
-                            self.superReload()
-                        })
-                    }
+                let projectRef = Database.database().reference().child(Const.ProjectsPath).queryOrdered(byChild: "members/" + user.uid).queryStarting(atValue: 0)
+                
+                
+                projectRef.observe(.childAdded,with:{snapshot in
+                    //print("DEBUG_PRINT:[personal] project add")
+                    let theProject = Projects(snapshot)
+                    Const.addProjectData(theProject)
+                    self.tableV.reloadData()
                 })
                 
-                /////////   childChanged
-                projectIdRef.child("projects").observe( .childChanged , with:{ snapshot in
-                    let projectBool = IdBool(booldata:snapshot)
-                    if let bool = projectBool.bool , let pid = projectBool.id{
-                        if bool {
-                            let index = self.joinProjectsIds.index(of: pid)
-                            self.joinProjectsIds.remove(at: index!)
-                            self.manageProjectsIds.insert(pid ,at:0)
-                        }else{
-                            let index = self.manageProjectsIds.index(of: pid)
-                            self.manageProjectsIds.remove(at: index!)
-                            self.joinProjectsIds.insert(pid ,at:0)
-                        }
-                        self.superReload()
-                    }
+                projectRef.observe(.childChanged,with:{snapshot in
+                    //print("DEBUG_PRINT:[personal] project change")
+                    let theProject = Projects(snapshot)
+                    Const.reloadProjectData(theProject)
+                    self.tableV.reloadData()
                 })
                 
-                /////////   childRemoved
-                projectIdRef.child("projects").observe( .childRemoved , with:{ snapshot in
-                    let projectBool = IdBool(booldata:snapshot)
-                    if let bool = projectBool.bool , let pid = projectBool.id{
-                        let indexA = self.projectsIds.index(of: pid)
-                        self.projectsIds.remove(at: indexA!)
-                        self.projectTitles.removeValue(forKey: pid)
-                        if !bool {
-                            let index = self.joinProjectsIds.index(of: pid)
-                            self.joinProjectsIds.remove(at: index!)
-                        }else{
-                            let index = self.manageProjectsIds.index(of: pid)
-                            self.manageProjectsIds.remove(at: index!)
+                
+                projectRef.observe(.childRemoved,with:{snapshot in
+                    //print("DEBUG_PRINT:[personal] project remove")
+                    let theProject = Projects(snapshot)
+                    Const.removeProjectData(theProject)
+                    
+                    let taskFilter = Const.tasks.filter({$0.project == theProject.id!})
+                    if taskFilter.count > 0{
+                        print("DEBUG_PRINT:taskFilter.count:\(taskFilter.count)")
+                        for task in taskFilter {
+                            print("DEBUG_PRINT:task:\(task.id!)")
+                            Const.removeTaskData(task)
                         }
-                        let setNewPath = Const.ProjectsPath + "/" + pid
-                        let projectTitleRef = Database.database().reference().child(setNewPath)
-                        projectTitleRef.removeAllObservers()
-                        self.superReload()
                     }
+                    
+                    self.tableV.reloadData()
                 })
                 
                 self.observeProjectBool = true
-            }
-            
-            
-            /////////  user->invited
-            if !self.observeInvitedBool {
-                
-                /////////   childAdded
-                projectIdRef.child("invited").observe( .childAdded , with:{ snapshot in
-                    let pid = IdBool(booldata:snapshot).id!
-                    let setNewPath = Const.ProjectsPath + "/" + pid
-                    let projectTitleRef = Database.database().reference().child(setNewPath)
-                    projectTitleRef.observe(.value,with:{snapshot in
-                        let projectData = Projects(projectdata:snapshot)
-                        self.invitedProjectsIds.append( pid )
-                        self.projectTitles[pid] = projectData.title!
-                        self.superReload()
-                    })
-                })
-                
-                /////////   childRemoved
-                projectIdRef.child("invited").observe( .childRemoved , with:{ snapshot in
-                    let pid = IdBool(booldata:snapshot).id!
-                    let index = self.invitedProjectsIds.index(of: pid)
-                    self.invitedProjectsIds.remove(at: index!)
-                    self.projectTitles.removeValue(forKey: pid)
-                    let setNewPath = Const.ProjectsPath + "/" + pid
-                    let projectTitleRef = Database.database().reference().child(setNewPath)
-                    projectTitleRef.removeAllObservers()
-                    self.superReload()
-                })
-                
-                self.observeInvitedBool = true
             }
         }
     }
@@ -220,10 +157,9 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
 
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.setPath = Const.UsersPath + "/" + (Auth.auth().currentUser?.uid)!
+        self.setPath = Const.UsersPath + "/" + Const.user.id! + "/name"
         let postRef = Database.database().reference().child(self.setPath!)
-        let updateData = ["name":self.userNameTF.text!]
-        postRef.updateChildValues(updateData)
+        postRef.setValue(self.userNameTF.text!)
         textField.resignFirstResponder()
         return true
     }
@@ -231,137 +167,128 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     @IBAction func handleSegmentControl(_ sender: Any) {
         self.projectType = sc.selectedSegmentIndex
-        self.superReload()
+        self.tableV.reloadData()
     }
     
-    
-    func superReload(){
-        let sum = self.manageProjectsIds.count + self.joinProjectsIds.count + self.invitedProjectsIds.count
-        if self.projectTitles.count == sum {
-            self.tableV.reloadData()
-        }
-    }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("DEBUG_PRINT:numberOfRowsInSection")
+        print("DEBUG_PRINT:Const.projects:\(Const.projects.count)")
         switch(self.projectType){
             case 0:
-                return self.projectsIds.count
+                print("DEBUG_PRINT:numberOfRowsInSection 0")
+                self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! > 0 }
+                print("DEBUG_PRINT:numberOfRowsInSection 0")
             case 1:
-                return self.manageProjectsIds.count
+                print("DEBUG_PRINT:numberOfRowsInSection 1")
+                self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 2 }
+                print("DEBUG_PRINT:numberOfRowsInSection 1")
             case 2:
-                return self.joinProjectsIds.count
+                print("DEBUG_PRINT:numberOfRowsInSection 2")
+                self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 1 }
+                print("DEBUG_PRINT:numberOfRowsInSection 2")
             case 3:
-                return self.invitedProjectsIds.count
+                print("DEBUG_PRINT:numberOfRowsInSection 3")
+                self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 0 }
+                print("DEBUG_PRINT:numberOfRowsInSection 3")
             default:
-                return self.projectsIds.count
-        }
+                print("DEBUG_PRINT:numberOfRowsInSection d")
+                self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! > 0 }
+                print("DEBUG_PRINT:numberOfRowsInSection d")
+            }
+        print("DEBUG_PRINT:self.selectProjects.count:\(self.selectProjects.count)")
+        return self.selectProjects.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("DEBUG_PRINT:cellForRowAt")
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
-        switch(self.projectType){
-        case 0:
-            self.theProjectId = self.projectsIds[indexPath.row]
-        case 1:
-            self.theProjectId = self.manageProjectsIds[indexPath.row]
-        case 2:
-            self.theProjectId = self.joinProjectsIds[indexPath.row]
-        case 3:
-            self.theProjectId = self.invitedProjectsIds[indexPath.row]
-            cell.selectionStyle = UITableViewCellSelectionStyle.none
-        default:
-            self.theProjectId = self.projectsIds[indexPath.row]
-        }
-        self.theProjectTitle = self.projectTitles[self.theProjectId!]!
-        cell.textLabel?.text = self.theProjectTitle
+        cell.textLabel?.text = self.selectProjects[indexPath.row].title!
         cell.textLabel?.textAlignment = NSTextAlignment.center
         cell.backgroundColor = UIColor.yellow
         return cell
     }
     
+
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        print("DEBUG_PRINT:estimatedHeightForRowAt")
         return UITableViewAutomaticDimension
     }
     
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableV.deselectRow(at: indexPath as IndexPath, animated: true)
+        print("DEBUG_PRINT:didSelectRowAt")
         if self.projectType < 3 {
-            switch(self.projectType){
-            case 0:
-                self.theProjectId = self.projectsIds[indexPath.row]
-            case 1:
-                self.theProjectId = self.manageProjectsIds[indexPath.row]
-            case 2:
-                self.theProjectId = self.joinProjectsIds[indexPath.row]
-            default:
-                self.theProjectId = self.projectsIds[indexPath.row]
-            }
             let projectTaskViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectTask") as! ProjectTaskController
-            projectTaskViewController.projectId = self.theProjectId!
+            projectTaskViewController.projectId = self.selectProjects[indexPath.row].id!
             self.navigationController?.pushViewController(projectTaskViewController, animated: true)
             }
     }
     
+    
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        switch(self.projectType){
-            case 0:
-                self.theProjectId = self.projectsIds[indexPath.row]
-            case 1:
-                self.theProjectId = self.manageProjectsIds[indexPath.row]
-            case 2:
-                self.theProjectId = self.joinProjectsIds[indexPath.row]
-            case 3:
-                self.theProjectId = self.invitedProjectsIds[indexPath.row]
-            default:
-                self.theProjectId = self.projectsIds[indexPath.row]
-        }
-        
-        
+        print("DEBUG_PRINT:editActionsForRowAt")
+        let projectId = self.selectProjects[indexPath.row].id!
         self.detailButton = UITableViewRowAction(style: .normal, title: "Detail") { (action, index) -> Void in
             let createProjectViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectDetail") as! CreateProjectController
-            createProjectViewController.projectId = self.theProjectId!
+            createProjectViewController.projectId = projectId
             self.navigationController?.pushViewController(createProjectViewController, animated: true)
         }
         self.detailButton.backgroundColor = UIColor.green
         
         
-        let projectUserPath = Const.ProjectsPath + "/" + self.theProjectId + "/members/" + Auth.auth().currentUser!.uid
-        let userTaskPath = Const.UsersPath + "/" + Auth.auth().currentUser!.uid + "/tasks"
-        let projectTaskPath = Const.ProjectsPath + "/" + self.theProjectId + "/tasks"
-        let userProjectsPath = Const.UsersPath + "/" + Auth.auth().currentUser!.uid + "/projects/" + self.theProjectId
-        let userInvitedPath = Const.UsersPath + "/" + Auth.auth().currentUser!.uid + "/invited/" + self.theProjectId
-        
         self.leaveButton = UITableViewRowAction(style: .normal, title: "Leave") { (action, index) -> Void in
-            let projectUserRef = Database.database().reference().child(projectUserPath)
-            projectUserRef.removeValue()
-            let userProjectsRef = Database.database().reference().child(userProjectsPath)
-            userProjectsRef.removeValue()
             
-            let projectTaskRef = Database.database().reference().child(projectTaskPath)
-            projectTaskRef.observeSingleEvent(of:.value,with:{snapshot in
-                if let theTaskId = IdValue(valuedata:snapshot).id{
-                    let userTheTaskPath = userTaskPath + "/" + theTaskId
-                    let userTheTaskRef = Database.database().reference().child(userTheTaskPath)
-                    userTheTaskRef.observeSingleEvent(of:.value,with:{snapshot in
-                        if let userTheTaskId = IdValue(valuedata:snapshot).id {
-                            let userTheTaskIdPath = userTaskPath + "/" + userTheTaskId
-                            let userTheTaskIdRef = Database.database().reference().child(userTheTaskIdPath)
-                            userTheTaskIdRef.removeValue()
-                        }
-                    })
+            print("DEBUG_PRINT:call leave")
+            let onlyMember = self.selectProjects[indexPath.row].members.count == 1
+            
+            
+            let path1 = Const.ProjectsPath + "/" + projectId + "/members/" + Const.user.id!
+            let projectUserRef = Database.database().reference().child(path1)
+            projectUserRef.removeValue()
+            print("DEBUG_PRINT:delete project->members->uid")
+            
+            let path2 = Const.UsersPath + "/" + Const.user.id! + "/projects/" + projectId
+            let userProjectsRef = Database.database().reference().child(path2)
+            userProjectsRef.removeValue()
+            print("DEBUG_PRINT:delete user->projects->projectid")
+            
+            var taskids :[String]=[]
+            for taskid in self.selectProjects[indexPath.row].tasks.keys {
+                for taskid2 in Const.user.tasks.keys {
+                    if taskid == taskid2 {
+                        Database.database().reference().child(Const.UsersPath + "/" + Const.user.id! + "/tasks/" + taskid).removeValue()
+                        taskids.append(taskid)
+                    }
                 }
-            })
-            let projectPath = Const.ProjectsPath + "/" + self.theProjectId
-            let projectRef = Database.database().reference().child(projectPath)
-            projectRef.removeAllObservers()
+            }
+            
+            
+            if onlyMember {
+                for taskid in self.selectProjects[indexPath.row].tasks.keys {
+                    print("DEBUG_PRINT:taskid:\(taskid)")
+                    Database.database().reference().child(Const.TasksPath).child(taskid).removeValue()
+                    print("DEBUG_PRINT:delete task")
+                }
+                Database.database().reference().child(Const.ProjectsPath).child(projectId).removeValue()
+                print("DEBUG_PRINT:delete project")
+            }
         }
         self.leaveButton.backgroundColor = UIColor.red
         
         
         
         self.refuseButton = UITableViewRowAction(style: .normal, title: "Refuse") { (action, index) -> Void in
-            let userInvitedRef = Database.database().reference().child(userInvitedPath)
-            userInvitedRef.removeValue()
+            
+            let path1 = Const.ProjectsPath + "/" + projectId + "/members/" + Const.user.id!
+            let projectRef = Database.database().reference().child(path1)
+            
+            let path2 = Const.UsersPath + "/" + Const.user.id! + "/projects/" + projectId
+            let userProjectsRef = Database.database().reference().child(path2)
+            
+            projectRef.removeValue()
+            userProjectsRef.removeValue()
         }
         self.refuseButton.backgroundColor = UIColor.red
         
@@ -369,13 +296,14 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
         
         
         self.enterButton = UITableViewRowAction(style: .normal, title: "Join") { (action, index) -> Void in
-            let projectRef = Database.database().reference().child(projectUserPath)
-            let userProjectsRef = Database.database().reference().child(userProjectsPath)
-            let userInvitedRef = Database.database().reference().child(userInvitedPath)
+            let path1 = Const.ProjectsPath + "/" + projectId + "/members/" + Const.user.id!
+            let projectRef = Database.database().reference().child(path1)
             
-            userInvitedRef.removeValue()
-            projectRef.setValue(false)
-            userProjectsRef.setValue(false)
+            let path2 = Const.UsersPath + "/" + Const.user.id! + "/projects/" + projectId
+            let userProjectsRef = Database.database().reference().child(path2)
+            
+            projectRef.setValue(1)
+            userProjectsRef.setValue(1)
         }
         self.enterButton.backgroundColor = UIColor.blue
         

@@ -19,7 +19,7 @@
 		7995C6071FD65FA100318A74 /* CreateProjectController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C6061FD65FA100318A74 /* CreateProjectController.swift */; };
 		7995C6091FD6748000318A74 /* MemberController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C6081FD6748000318A74 /* MemberController.swift */; };
 		7995C60B1FD68D4D00318A74 /* InviteMemberController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */; };
-		7995C60D1FD6BA8100318A74 /* ProjectData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7995C60C1FD6BA8100318A74 /* ProjectData.swift */; };
+		79A139171FE9305900EFC565 /* UIApplication.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79A139161FE9305900EFC565 /* UIApplication.swift */; };
 		79ADBA4A1FD53F120078DC23 /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79ADBA491FD53F120078DC23 /* LoginController.swift */; };
 		79ADBA4C1FD5418B0078DC23 /* list-simple-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 79ADBA4B1FD5418B0078DC23 /* list-simple-7.png */; };
 		79ADBA4E1FD541910078DC23 /* man-7.png in Resources */ = {isa = PBXBuildFile; fileRef = 79ADBA4D1FD541910078DC23 /* man-7.png */; };
@@ -51,7 +51,7 @@
 		7995C6061FD65FA100318A74 /* CreateProjectController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateProjectController.swift; sourceTree = "<group>"; };
 		7995C6081FD6748000318A74 /* MemberController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MemberController.swift; sourceTree = "<group>"; };
 		7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InviteMemberController.swift; sourceTree = "<group>"; };
-		7995C60C1FD6BA8100318A74 /* ProjectData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectData.swift; sourceTree = "<group>"; };
+		79A139161FE9305900EFC565 /* UIApplication.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIApplication.swift; sourceTree = "<group>"; };
 		79ADBA491FD53F120078DC23 /* LoginController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		79ADBA4B1FD5418B0078DC23 /* list-simple-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "list-simple-7.png"; sourceTree = "<group>"; };
 		79ADBA4D1FD541910078DC23 /* man-7.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "man-7.png"; sourceTree = "<group>"; };
@@ -111,13 +111,13 @@
 				7954FD3E1FE3E67D00ACFE0E /* TableViewCell.swift */,
 				7954FD3F1FE3E67D00ACFE0E /* TableViewCell.xib */,
 				795AEB4E1FE26A0100F67981 /* ChargerController.swift */,
+				79A139161FE9305900EFC565 /* UIApplication.swift */,
 				795AEB4A1FE14EEF00F67981 /* AddTaskController.swift */,
 				795AEB481FE10DB900F67981 /* ProjectTaskController.swift */,
 				79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */,
 				790A95671FD8283D00D59EA5 /* Users.swift */,
 				79E541F91FD8DFD1000C3A35 /* IdBool.swift */,
 				795AEB4C1FE2602700F67981 /* IdValue.swift */,
-				7995C60C1FD6BA8100318A74 /* ProjectData.swift */,
 				79E541FD1FD8F8D1000C3A35 /* Tasks.swift */,
 				790A95651FD822EC00D59EA5 /* Const.swift */,
 				7995C60A1FD68D4D00318A74 /* InviteMemberController.swift */,
@@ -280,7 +280,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				79E541FE1FD8F8D1000C3A35 /* Tasks.swift in Sources */,
-				7995C60D1FD6BA8100318A74 /* ProjectData.swift in Sources */,
 				795AEB4B1FE14EEF00F67981 /* AddTaskController.swift in Sources */,
 				79C7F96D1FD517DD00FD8A9B /* ViewController.swift in Sources */,
 				79E542021FD922F8000C3A35 /* Projects.swift in Sources */,
@@ -288,6 +287,7 @@
 				795AEB491FE10DB900F67981 /* ProjectTaskController.swift in Sources */,
 				7995C6091FD6748000318A74 /* MemberController.swift in Sources */,
 				7995C60B1FD68D4D00318A74 /* InviteMemberController.swift in Sources */,
+				79A139171FE9305900EFC565 /* UIApplication.swift in Sources */,
 				79E541FA1FD8DFD1000C3A35 /* IdBool.swift in Sources */,
 				795AEB4F1FE26A0100F67981 /* ChargerController.swift in Sources */,
 				790A95661FD822EC00D59EA5 /* Const.swift in Sources */,

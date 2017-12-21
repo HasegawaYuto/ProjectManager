@@ -17,19 +17,18 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     @IBOutlet weak var addTaskButton: UIBarButtonItem!
 
     @IBOutlet weak var taskTable: UITableView!
+    @IBOutlet weak var projectProgress: UIProgressView!
 
+    @IBOutlet weak var progressLabel: UILabel!
 
-    let user = Auth.auth().currentUser!
     var isManager:Bool = false
     var projectId :String!
     var startProjectDate:NSDate!
     var endProjectDate:NSDate!
-    var members : [IdBool] = []
     var observe : Bool = false
     
     var tasks:[Tasks]=[]
-    var memberNames:[String:String]=[:]
-    var names:[String]=[]
+    var users :[Users]=[]
     
     @IBAction func handleTaskAdd(_ sender: Any) {
         let addTaskViewController = self.storyboard?.instantiateViewController(withIdentifier: "AddTask") as! AddTaskController
@@ -60,8 +59,38 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     }
     
     
+    func superReload(){
+        print("DEBUG_PRINT:cell superReload")
+        let theProject = Const.projects.filter({$0.id == self.projectId})[0]
+        let progress:Double = 0.1
+        self.projectProgress.progress = Float(progress)
+        self.progressLabel.text = String(Int(progress * 100)) + "%"
+        
+        
+        let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
+        let users = Const.users.filter({$0.projects[self.projectId]! >= 1})
+        let flag1 = tasksFilter.count == theProject.tasks.count
+        let flag2 = users.count == theProject.members.count
+        if flag1 && flag2 {
+            self.taskTable.reloadData()
+            
+            let term = Const.getTermOfTwoDate(theProject.startDate!,theProject.endDate!)
+            
+            print("DEBUG_PRINT:term:\(term)")
+        }
+    }
+    
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        //print("DEBUG_PRINT:numberOfRowsInSection")
+        let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
+        //print("DEBUG_PRINT:numberOfRowsInSection 1")
+        //print("DEBUG_PRINT:Const.users:\(Const.users)")
+        self.users = Const.users.filter({$0.projects[self.projectId!]! >= 1})
+        //print("DEBUG_PRINT:numberOfRowsInSection 2")
+        self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+        //print("DEBUG_PRINT:numberOfRowsInSection 3")
         return self.tasks.count
     }
     
@@ -70,17 +99,23 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
      */
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         // 再利用するCellを取得する.
+        //print("DEBUG_PRINT:call cellForRowAt")
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath as IndexPath) as! TableViewCell
         
         cell.task = self.tasks[indexPath.row].label!
-        self.names = []
-        for member in self.tasks[indexPath.row].chargers.keys {
-            self.names.append(self.memberNames[member]!)
+        if self.tasks[indexPath.row].chargers.count > 0{
+            let chargersId = self.tasks[indexPath.row].chargers.keys
+            var chargersName :[String]=[]
+            for charger in chargersId {
+                for user in self.users {
+                    if charger == user.id! {
+                        chargersName.append(user.name!)
+                    }
+                }
+            }
+            cell.subtext = chargersName.joined(separator: ",")
         }
-        if self.names.count > 0 {
-            cell.subtext = self.names.joined(separator: ",")
-        }
-        cell.status = String(Int(self.tasks[indexPath.row].status! * 100))
+        cell.status = self.tasks[indexPath.row].status!
         cell.importance = self.tasks[indexPath.row].importance!
         cell.setView()
         
@@ -95,10 +130,10 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     */
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        //print("DEBUG_PRINT:viewForHeaderInSection")
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
         cell.task = "Task"
         cell.subtext = "Charger"
-        cell.status = "Status"
         cell.importance = 4
         //cell.backgroundColor = UIColor.red
         cell.setView()
@@ -110,60 +145,82 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     
     
     override func viewWillAppear(_ animated: Bool) {
-        print("DEBUG_PRINT:call ProjectTask viewWillAppear")
+        //print("DEBUG_PRINT:call ProjectTask viewWillAppear")
         super.viewWillAppear(animated)
         
         //print("DEBUG_PRINT:id:\(self.projectId!)")
         
         if !self.observe {
+            
+            let taskRef = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId!)
+            
+            taskRef.observe(.childAdded,with:{snapshot in
+                print("DEBUG_PRINT:[project task] task add")
+                let theTask = Tasks(snapshot)
+                Const.addTaskData(theTask)
+                self.superReload()
+            })
+            
+            
+            taskRef.observe(.childChanged,with:{snapshot in
+                print("DEBUG_PRINT:[project task] task change")
+                let theTask = Tasks(snapshot)
+                Const.reloadTaskData(theTask)
+                self.superReload()
+            })
+            
+            
+            taskRef.observe(.childRemoved,with:{snapshot in
+                print("DEBUG_PRINT:[project task] task remove")
+                let theTask = Tasks(snapshot)
+                Const.removeTaskData(theTask)
+                self.superReload()
+            })
+            
+            
+            let userRef = Database.database().reference().child(Const.UsersPath).queryOrdered(byChild: "projects/" + self.projectId! ).queryStarting(atValue: 1 )
+            
+            userRef.observe(.childAdded,with:{snapshot in
+                print("DEBUG_PRINT:[project task] user add")
+                let theUser = Users(snapshot)
+                Const.addUserData(theUser)
+                self.superReload()
+            })
+            
+            userRef.observe(.childChanged,with:{snapshot in
+                print("DEBUG_PRINT:[project task] user change")
+                let theUser = Users(snapshot)
+                Const.reloadUserData(theUser)
+                self.superReload()
+            })
+            
+            userRef.observe(.childRemoved,with:{snapshot in
+                print("DEBUG_PRINT:[project task] user remove")
+                let theUser = Users(snapshot)
+                Const.removeUserData(theUser)
+                self.superReload()
+            })
+            
             let setPath = Const.ProjectsPath + "/" + self.projectId
             let projectRef = Database.database().reference().child(setPath)
             projectRef.observe(.value,with:{snapshot in
-                //print("DEBUG_PRINT:call project observe:\(snapshot)")
-                let theProject = Projects(projectdata:snapshot)
+                print("DEBUG_PRINT:[project task] project value")
+                let theProject = Projects(snapshot)
+                Const.reloadProjectData(theProject)
+
                 self.projectTitle.title = theProject.title!
                 self.startProjectDate = theProject.startDate!
                 self.endProjectDate = theProject.endDate!
-                self.isManager = theProject.members[self.user.uid]!
+                
+                self.isManager = theProject.members[Const.user.id!]! == 2
                 if self.isManager {
                     self.addTaskButton.isEnabled = true
                 }else{
                     self.addTaskButton.isEnabled = false
                 }
-                for member in theProject.members.keys {
-                    let Ref = Database.database().reference().child(Const.UsersPath).child(member).child("name")
-                    Ref.observe(.value,with:{snapshot in
-                        self.memberNames[member] = snapshot.value as? String
-                        //print("DEBUG_PRINT:name:\(self.memberNames)")
-                    })
-                }
+                
+                self.superReload()
             })
-            
-            let taskRef = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId)
-            taskRef.observe(.childAdded,with:{snapshot in
-                print("DEBUG_PRINT:Add")
-                let theTask = Tasks(taskdata:snapshot)
-                self.tasks.append(theTask)
-                self.taskTable.reloadData()
-            })
-            
-            taskRef.observe(.childChanged,with:{snapshot in
-                print("DEBUG_PRINT:Change")
-                let theTask = Tasks(taskdata:snapshot)
-                self.tasks.append(theTask)
-                self.taskTable.reloadData()
-            })
-            
-            taskRef.observe(.childRemoved,with:{snapshot in
-                print("DEBUG_PRINT:Remove")
-                let theTask = Tasks(taskdata:snapshot)
-                let index = self.tasks.index(of:theTask)
-                self.tasks.remove(at:index!)
-                Database.database().reference().child(Const.TasksPath).child(theTask.id!).removeAllObservers()
-                self.taskTable.reloadData()
-            })
-            
-            
             
             self.observe = true
         }
@@ -171,12 +228,12 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     
     override func viewWillDisappear(_ animated: Bool){
         print("DEBUG_PRINT:call ProjectTask viewWillDisappear")
-        if self.observe {
-            let setPath = Const.ProjectsPath + "/" + self.projectId
-            Database.database().reference().child(setPath).removeAllObservers()
-            Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId).removeAllObservers()
-            self.tasks=[]
+        if self.observe == true {
+            Database.database().reference().child(Const.TasksPath).removeAllObservers()
+            Database.database().reference().child(Const.UsersPath).removeAllObservers()
+            Database.database().reference().child(Const.ProjectsPath).child(self.projectId!).removeAllObservers()
             self.observe = false
+            print("DEBUG_PRINT:[project task] observe off")
         }
         
         super.viewWillDisappear(animated)

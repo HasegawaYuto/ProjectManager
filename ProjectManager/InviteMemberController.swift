@@ -18,14 +18,17 @@ class InviteMemberController: UIViewController, UISearchBarDelegate {
     
     var projectId :String!
     var searchUserId :String!
-    var searchBool :Bool = false
     
     @IBAction func handleInviteButton(_ sender: Any) {
         print("DEBUG_PRINT:call handleInviteButton")
-        let userPath = Const.UsersPath + "/" + self.searchUserId
-        print("DEBUG_PRINT:path:\(userPath)")
-        let userPathRef = Database.database().reference().child(userPath).child("invited").child(self.projectId)
-        userPathRef.setValue(true)
+        let userPath = Const.UsersPath + "/" + self.searchUserId + "/projects/" + self.projectId
+        let userPathRef = Database.database().reference().child(userPath)
+        
+        let projectPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + self.searchUserId
+        let projectPathRef = Database.database().reference().child(projectPath)
+        
+        userPathRef.setValue(0)
+        projectPathRef.setValue(0)
         self.userL.text = "Complete invitation"
         self.findL.isHidden = true
     }
@@ -36,30 +39,24 @@ class InviteMemberController: UIViewController, UISearchBarDelegate {
     }
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        if self.searchBool {
-            Database.database().reference().child(Const.UsersPath).removeAllObservers()
-            print("DEBUG_PRINT:remove observe")
-        }
         let userRef = Database.database().reference().child(Const.UsersPath).queryOrdered(byChild: "mail").queryEqual(toValue: self.searchBar.text)
         userRef.observeSingleEvent(of:.value,with:{snapshot in
             print("DEBUG_PRINT:search start")
             let datas = snapshot.children.allObjects as [Any]
             if datas.count > 0 {
-                let theUser = Users(userdata:datas[0] as! DataSnapshot)
-                print("DEBUG_PRINT:set theUser")
-                self.userL.text = theUser.name
-                //print("DEBUG_PRINT:set name:\(theUser.name)")
-                self.searchUserId = theUser.id
+                let theUser = Users(datas[0] as! DataSnapshot)
+                print("DEBUG_PRINT:set theUser:\(theUser)")
+                self.userL.text = theUser.name!
+                self.searchUserId = theUser.id!
+                print("DEBUG_PRINT:self.searchUserId:\(self.searchUserId!)")
                 self.userL.isHidden = false
                 self.findL.isHidden = false
-                self.searchBool = true
                 self.inviteButton.isHidden = false
                 self.inviteButton.isEnabled = true
             } else {
                 self.userL.text = "No such user"
                 self.userL.isHidden = false
                 self.findL.isHidden = true
-                self.searchBool = false
                 self.inviteButton.isHidden = true
                 self.inviteButton.isEnabled = false
             }

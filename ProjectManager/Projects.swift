@@ -16,11 +16,11 @@ class Projects: NSObject {
     var detail:String?
     var startDate: NSDate?
     var endDate: NSDate?
-    var members: [String:Bool]=[:]
+    var members: [String:Int]=[:]
     var tasks:[String:Double]=[:]
     //var category:[String]=[]
     
-    init(projectdata: DataSnapshot) {
+    init(_ projectdata: DataSnapshot) {
         //print("DEBUG_PRINT:get project data")
         self.id = projectdata.key
         
@@ -35,7 +35,7 @@ class Projects: NSObject {
         let eDate = valueDictionary["endDate"] as? String
         self.endDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(eDate!)!)
         
-        if let members = valueDictionary["members"] as? [String:Bool] {
+        if let members = valueDictionary["members"] as? [String:Int] {
             self.members = members
         }
         

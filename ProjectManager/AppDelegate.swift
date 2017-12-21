@@ -38,10 +38,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if Auth.auth().currentUser != nil {
             let user = Auth.auth().currentUser!
-            let setPath = Const.UsersPath + "/" + user.uid + "/tasks"
-            let userTasksData = Database.database().reference().child(setPath)
+            let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
             userTasksData.observe(.value , with:{snapshot in
-                if (snapshot.value as? [[String:Int]]) != nil {
+                let datas = snapshot.children.allObjects as [Any]
+                if datas.count > 0 {
                     AppDelegate.tabBarController.selectedIndex = 0
                 }else{
                     AppDelegate.tabBarController.selectedIndex = 1

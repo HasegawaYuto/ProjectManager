@@ -31,12 +31,7 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
     var maxDate:NSDate!
     var importance:Double!
     var status:Double = 0
-    
-    var taskLabelText :String!
-    var taskDetailText:String!
-    var importanceDouble:Double!
-    var startDateValue:String!
-    var endDateValue:String!
+
     var setPath :String!
     
     
@@ -44,6 +39,8 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
         self.saveTask()
         let chargerViewController = self.storyboard?.instantiateViewController(withIdentifier: "Charger") as! ChargerController
         chargerViewController.taskId = self.taskId
+        chargerViewController.projectId = self.projectId
+        chargerViewController.isManager = self.isManager
         navigationController?.pushViewController(chargerViewController, animated: true)
         print("DEBUG_PRINT:push Member")
     }
@@ -53,41 +50,56 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
     }
     
     func saveTask(){
-        let taskLabelBool = self.taskLabelText != self.taskL.text
-        let taskDetailBool = self.taskDetailText != self.detailT.text
-        let importanceBool = self.importanceDouble != self.importanceV.rating
-        let startDateBool = self.startDateValue != String(self.startDateP.date.timeIntervalSinceReferenceDate)
-        let endDateBool = self.endDateValue != String(self.endDateP.date.timeIntervalSinceReferenceDate)
-        let flag = taskLabelBool || taskDetailBool || importanceBool || startDateBool || endDateBool
-        if flag && isManager  {
-            print("DEBUG_PRINT:flag:\(flag)")
+        var flag = false
+        if Const.tasks.filter({$0.id == self.taskId }).count > 0 {
+            let theTask = Const.tasks.filter({$0.id == self.taskId })[0]
+            let taskLabelBool = theTask.label != self.taskL.text
+            let taskDetailBool = theTask.detail != self.detailT.text
+            let importanceBool = theTask.importance != self.importanceV.rating
+            let startDateBool = String(theTask.startDate!.timeIntervalSinceReferenceDate) != String(self.startDateP.date.timeIntervalSinceReferenceDate)
+            let endDateBool = String(theTask.endDate!.timeIntervalSinceReferenceDate) != String(self.endDateP.date.timeIntervalSinceReferenceDate)
+            
+            flag = taskLabelBool || taskDetailBool || importanceBool || startDateBool || endDateBool
+        }else{
+            flag = true
+        }
+        
+        if flag && self.isManager  {
+            //print("DEBUG_PRINT:flag:\(flag)")
+            //print("DEBUG_PRINT:isManager:\(self.isManager)")
             if self.mode == 0 {
-                self.setPath = Const.ProjectsPath + "/" + self.projectId + "/tasks"
+                self.setPath = Const.ProjectsPath + "/" + self.projectId
                 self.taskId = Database.database().reference().child(self.setPath!).childByAutoId().key as String
+                
+                let taskRef = Database.database().reference().child(Const.TasksPath + "/" + self.taskId!)
+                taskRef.observe(.value,with:{snapshot in
+                    let theTask = Tasks(snapshot)
+                    Const.addTaskData(theTask)
+                })
+                self.observe = true
             }
             let projectRef = Database.database().reference().child(self.setPath!).child("tasks").child(self.taskId)
             let taskRef = Database.database().reference().child(Const.TasksPath).child(self.taskId)
-            let saveData = ["label":self.taskL.text!,
-                            "detail":self.detailT.text!,
-                            "project":self.projectId!,
-                            "status":self.status,
-                            "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                            "endDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                            "importance":self.importanceV.rating] as [String : Any]
-            //taskRef.setValue(saveData)
-            self.taskLabelText = self.taskL.text!
-            self.taskDetailText = self.detailT.text!
-            self.importanceDouble = self.importanceV.rating
-            self.startDateValue = String(self.startDateP.date.timeIntervalSinceReferenceDate)
-            self.endDateValue = String(self.endDateP.date.timeIntervalSinceReferenceDate)
             
-            projectRef.setValue(self.status)
             if mode == 0 {
                 print("DEBUG_PRINT:mode create")
+                let saveData = ["label":self.taskL.text!,
+                                "detail":self.detailT.text!,
+                                "project":self.projectId!,
+                                "status":2.0,
+                                "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "endDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "importance":self.importanceV.rating] as [String : Any]
+                projectRef.setValue(2.0)
                 taskRef.setValue(saveData)
                 self.mode = 1
             } else {
                 print("DEBUG_PRINT:mode update")
+                let saveData = ["label":self.taskL.text!,
+                                "detail":self.detailT.text!,
+                                "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "endDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "importance":self.importanceV.rating] as [String : Any]
                 taskRef.updateChildValues(saveData)
             }
         }
@@ -98,16 +110,15 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
         //print("DEBUG_PRINT:call viewWillDisappear AddTask")
         super.viewWillDisappear(animated)
         if self.observe == true {
-            //print("DEBUG_PRINT:observe:\(self.observe)")
+            print("DEBUG_PRINT:[Add Task]call observer off")
             self.setPath = Const.TasksPath + "/" + self.taskId
-            Database.database().reference().child(self.setPath).child("status").removeAllObservers()
+            Database.database().reference().child(self.setPath).removeAllObservers()
             self.observe = false
         }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         print("DEBUG_PRINT:call AddTask viewWillAppear")
-        print("DEBUG_PRINT:projectId:\(self.projectId!)")
         super.viewWillAppear(animated)
         
         self.startDateP.minimumDate = self.minDate! as Date
@@ -115,33 +126,29 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
         self.startDateP.maximumDate = self.maxDate! as Date
         self.endDateP.maximumDate = self.maxDate! as Date
         
-        print("DEBUG_PRINT:set dates")
-        
         if self.taskId != nil && self.observe == false{
+            
+            let taskRef = Database.database().reference().child(Const.TasksPath + "/" + self.taskId!)
+            taskRef.observe(.value,with:{snapshot in
+                let theTask = Tasks(snapshot)
+                Const.addTaskData(theTask)
+            })
+            
             self.setPath = Const.TasksPath + "/" + self.taskId
-            let taskRef = Database.database().reference().child(self.setPath)
-            taskRef.child("status").observe(.value,with:{snapshot in
-                self.status = snapshot.value as! Double
-            })
-            taskRef.observeSingleEvent(of:.value,with:{snapshot in
-                let theTask = Tasks(taskdata:snapshot)
-                self.taskL.text = theTask.label!
-                self.detailT.text = theTask.detail!
-                self.importanceV.rating = theTask.importance!
-                self.startDateP.date = theTask.startDate! as Date
-                self.endDateP.date = theTask.endDate! as Date
-                self.importance = theTask.importance!
-                if self.isManager == false {
-                    self.addButton.isEnabled = false
-                    self.addButton.isHidden = true
-                    self.chagerButton.isEnabled = false
-                }
-                self.taskLabelText = theTask.label!
-                self.taskDetailText = theTask.detail!
-                self.importanceDouble = theTask.importance!
-                self.startDateValue = String(theTask.startDate!.timeIntervalSinceReferenceDate)
-                self.endDateValue = String(theTask.endDate!.timeIntervalSinceReferenceDate)
-            })
+            
+            let theTask = Const.tasks.filter({$0.id == self.taskId })[0]
+            self.taskL.text = theTask.label!
+            self.detailT.text = theTask.detail!
+            self.importanceV.rating = theTask.importance!
+            self.startDateP.date = theTask.startDate! as Date
+            self.endDateP.date = theTask.endDate! as Date
+            self.importance = theTask.importance!
+            
+            if self.isManager == false {
+                self.addButton.isEnabled = false
+                self.addButton.isHidden = true
+                self.chagerButton.isEnabled = false
+            }
             self.mode = 1
             self.observe = true
         } else {

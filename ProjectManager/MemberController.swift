@@ -15,113 +15,101 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
     var isManager: Bool = false
     var observe: Bool = false
     
-    var memberIds : [String]=[]
-    var memberType : [String:Bool]=[:]
-    var memberNames : [String:String]=[:]
     var buttonLabel:String!
+    var sortUsers:[Users]=[]
     
     @IBOutlet weak var memberT: UITableView!
     @IBOutlet weak var addMemberButton: UIBarButtonItem!
     
     override func viewWillDisappear(_ animated: Bool){
         super.viewWillDisappear(animated)
-        let setPath = Const.ProjectsPath + "/" + self.projectId + "/members"
-        Database.database().reference().child(setPath).removeAllObservers()
-        for uid in self.memberIds {
-            Database.database().reference().child(Const.UsersPath).child(uid).child("name").removeAllObservers()
-        }
-        self.memberIds = []
-        self.memberType = [:]
-        self.memberNames = [:]
-        self.memberT.reloadData()
+        
+        Database.database().reference().child(Const.UsersPath).removeAllObservers()
         self.observe = false
-        //print("DEBUG_PRINT:call viewWillDisappear")
+        print("DEBUG_PRINT:[member] call viewWillDisappear")
     }
 
     @IBAction func handleInviteButton(_ sender: Any) {
         let inviteViewController = self.storyboard?.instantiateViewController(withIdentifier: "Invite") as? InviteMemberController
         inviteViewController?.projectId = self.projectId
         navigationController?.pushViewController(inviteViewController!, animated: true)
-        //print("DEBUG_PRINT:push Invite")
     }
-    
-    func superReload(){
-        let flag1 = self.memberIds.count == self.memberNames.count
-        let flag2 = self.memberIds.count == self.memberType.count
-        if flag1 && flag2 {
-            self.memberT.reloadData()
-        }
-    }
+
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        print("DEBUG_PRINT:will appear members")
         if !isManager {
             self.addMemberButton.isEnabled = false
         }
         
+        
+
         if self.observe == false {
-            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members"
-            let memberDataRef = Database.database().reference().child(setPath)
-            memberDataRef.observe(.childAdded,with:{snapshot in
-                let userBool = IdBool(booldata:snapshot)
-                let userId = userBool.id!
-                self.memberType[userId] = userBool.bool
-                let userDataRef = Database.database().reference().child(Const.UsersPath).child(userId)
-                userDataRef.observe(.value,with:{snapshot in
-                    let userData = Users(userdata:snapshot)
-                    self.memberNames[userId] = userData.name!
-                    self.memberIds.insert( userId , at:0)
-                    self.superReload()
-                })
-            })
             
-            memberDataRef.observe(.childRemoved,with:{snapshot in
-                let userBool = IdBool(booldata:snapshot)
-                let index = self.memberIds.index(of:userBool.id!)
-                self.memberIds.remove(at:index!)
-                self.memberNames.removeValue(forKey:userBool.id!)
-                self.memberType.removeValue(forKey:userBool.id!)
-                Database.database().reference().child(Const.UsersPath).child(userBool.id!).removeAllObservers()
-                self.superReload()
+            let memberDataRef = Database.database().reference().child(Const.UsersPath).queryOrdered(byChild: "projects/" + self.projectId).queryStarting(atValue:1)
+            
+            print("DEBUG_PRINT:[member] set memberDataRef")
+            
+            memberDataRef.observe(.childAdded,with:{snapshot in
+                print("DEBUG_PRINT:[member] call add")
+                let theUser = Users(snapshot)
+                Const.addUserData(theUser)
+                self.memberT.reloadData()
             })
             
             memberDataRef.observe(.childChanged,with:{snapshot in
-                let userBool = IdBool(booldata:snapshot)
-                self.memberType[userBool.id!] = userBool.bool
-                self.superReload()
+                print("DEBUG_PRINT:[member] call change")
+                let theUser = Users(snapshot)
+                Const.reloadUserData(theUser)
+                self.memberT.reloadData()
+            })
+            
+            memberDataRef.observe(.childRemoved,with:{snapshot in
+                print("DEBUG_PRINT:[member] call remove")
+                let theUser = Users(snapshot)
+                Const.removeUserData(theUser)
+                self.memberT.reloadData()
             })
             
             self.observe = true
         }
     }
+
+    
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return self.memberIds.count
+        print("DEBUG_PRINT:[member] Const.users:\(Const.users.count)")
+        let tempUsers = Const.users.filter({$0.projects[self.projectId!]! >= 1 })
+        print("DEBUG_PRINT:[member] tempUsers:\(tempUsers)")
+        self.sortUsers = tempUsers.sorted(by:{$0.projects[self.projectId!]! > $1.projects[self.projectId!]!})
+        print("DEBUG_PRINT:[member] self.sortUsers.count:\(self.sortUsers.count)")
+        return self.sortUsers.count
     }
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        //print("DEBUG_PRINT:set cell action処理")
-        let memberId = self.memberIds[indexPath.row]
-        let memberBool = self.memberType[memberId]
-        if !memberBool! {
+        
+        let theMember = self.sortUsers[indexPath.row]
+        let flag = theMember.projects[self.projectId]! == 1
+        if flag {
             self.buttonLabel = "To Manager"
         }else{
             self.buttonLabel = "To Joinner"
         }
         let typeButton = UITableViewRowAction(style: .normal, title: self.buttonLabel) { (action, index) -> Void in
-            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + memberId
-            let userPath = Const.UsersPath + "/" + memberId + "/projects/" + self.projectId
+            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + theMember.id!
+            let userPath = Const.UsersPath + "/" + theMember.id! + "/projects/" + self.projectId
             let memberDataRef = Database.database().reference().child(setPath)
             let userDataRef = Database.database().reference().child(userPath)
-            if memberBool! {
-                memberDataRef.setValue(false)
-                userDataRef.setValue(false)
+            if !flag {
+                memberDataRef.setValue(1)
+                userDataRef.setValue(1)
             }else{
-                memberDataRef.setValue(true)
-                userDataRef.setValue(true)
+                memberDataRef.setValue(2)
+                userDataRef.setValue(2)
             }
         }
-        if !memberBool! {
+        if !flag {
             typeButton.backgroundColor = UIColor.yellow
             //typeButton.textColor = UIColor.black
         }else{
@@ -129,8 +117,8 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
         }
         
         let excludeButton = UITableViewRowAction(style: .normal, title: "exclude") { (action, index) -> Void in
-            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + memberId
-            let userPath = Const.UsersPath + "/" + memberId + "/projects/" + self.projectId
+            let setPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + theMember.id!
+            let userPath = Const.UsersPath + "/" + theMember.id! + "/projects/" + self.projectId
             let memberDataRef = Database.database().reference().child(setPath)
             let userDataRef = Database.database().reference().child(userPath)
             memberDataRef.removeValue()
@@ -147,14 +135,13 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        //print("DEBUG_PRINT:call cellForRowAt")
+        print("DEBUG_PRINT:[member] call cellForRowAt")
         // セルを取得してデータを設定する
         let cell = tableView.dequeueReusableCell(withIdentifier: "MemberCell", for: indexPath as IndexPath)
-        let memberId = self.memberIds[indexPath.row]
-        let memberName = self.memberNames[memberId]
-        let memberBool = self.memberType[memberId]
-        cell.textLabel?.text = memberName
-        if memberBool! {
+        let theMember = self.sortUsers[indexPath.row]
+        let flag = theMember.projects[self.projectId]! == 1
+        cell.textLabel?.text = theMember.name
+        if !flag {
             cell.backgroundColor = UIColor.yellow
         }else{
             cell.backgroundColor = UIColor.clear
@@ -163,7 +150,6 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        // セルをタップされたら何もせずに選択状態を解除する
         self.memberT.deselectRow(at: indexPath as IndexPath, animated: true)
     }
     
