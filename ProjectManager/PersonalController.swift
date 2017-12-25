@@ -34,15 +34,15 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     var refuseButton: UITableViewRowAction!
 
     @IBAction func handleLogOut(_ sender: Any) {
-        print("DEBUG_PRINT:call log out")
+        //print("DEBUG_PRINT:call log out")
         if self.observeUserBool {
             Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
-            print("DEBUG_PRINT:remove observer name")
+            //print("DEBUG_PRINT:remove observer name")
             self.observeUserBool = false
         }
         if self.observeProjectBool {
             Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
-            print("DEBUG_PRINT:remove observer projects")
+            //print("DEBUG_PRINT:remove observer projects")
             
             self.observeProjectBool = false
         }
@@ -134,9 +134,9 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
                     
                     let taskFilter = Const.tasks.filter({$0.project == theProject.id!})
                     if taskFilter.count > 0{
-                        print("DEBUG_PRINT:taskFilter.count:\(taskFilter.count)")
+                        //print("DEBUG_PRINT:taskFilter.count:\(taskFilter.count)")
                         for task in taskFilter {
-                            print("DEBUG_PRINT:task:\(task.id!)")
+                            //print("DEBUG_PRINT:task:\(task.id!)")
                             Const.removeTaskData(task)
                         }
                     }
@@ -172,36 +172,36 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        print("DEBUG_PRINT:numberOfRowsInSection")
-        print("DEBUG_PRINT:Const.projects:\(Const.projects.count)")
+        //print("DEBUG_PRINT:numberOfRowsInSection")
+        //print("DEBUG_PRINT:Const.projects:\(Const.projects.count)")
         switch(self.projectType){
             case 0:
-                print("DEBUG_PRINT:numberOfRowsInSection 0")
+                //print("DEBUG_PRINT:numberOfRowsInSection 0")
                 self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! > 0 }
-                print("DEBUG_PRINT:numberOfRowsInSection 0")
+                //print("DEBUG_PRINT:numberOfRowsInSection 0")
             case 1:
-                print("DEBUG_PRINT:numberOfRowsInSection 1")
+                //print("DEBUG_PRINT:numberOfRowsInSection 1")
                 self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 2 }
-                print("DEBUG_PRINT:numberOfRowsInSection 1")
+                //print("DEBUG_PRINT:numberOfRowsInSection 1")
             case 2:
-                print("DEBUG_PRINT:numberOfRowsInSection 2")
+                //print("DEBUG_PRINT:numberOfRowsInSection 2")
                 self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 1 }
-                print("DEBUG_PRINT:numberOfRowsInSection 2")
+                //print("DEBUG_PRINT:numberOfRowsInSection 2")
             case 3:
-                print("DEBUG_PRINT:numberOfRowsInSection 3")
+                //print("DEBUG_PRINT:numberOfRowsInSection 3")
                 self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! == 0 }
-                print("DEBUG_PRINT:numberOfRowsInSection 3")
+                //print("DEBUG_PRINT:numberOfRowsInSection 3")
             default:
-                print("DEBUG_PRINT:numberOfRowsInSection d")
+                //print("DEBUG_PRINT:numberOfRowsInSection d")
                 self.selectProjects = Const.projects.filter{ $0.members[Const.user.id!]! > 0 }
-                print("DEBUG_PRINT:numberOfRowsInSection d")
+                //print("DEBUG_PRINT:numberOfRowsInSection d")
             }
-        print("DEBUG_PRINT:self.selectProjects.count:\(self.selectProjects.count)")
+        //print("DEBUG_PRINT:self.selectProjects.count:\(self.selectProjects.count)")
         return self.selectProjects.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        print("DEBUG_PRINT:cellForRowAt")
+        //print("DEBUG_PRINT:cellForRowAt")
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
         cell.textLabel?.text = self.selectProjects[indexPath.row].title!
         cell.textLabel?.textAlignment = NSTextAlignment.center
@@ -211,14 +211,14 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        print("DEBUG_PRINT:estimatedHeightForRowAt")
+        //print("DEBUG_PRINT:estimatedHeightForRowAt")
         return UITableViewAutomaticDimension
     }
     
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableV.deselectRow(at: indexPath as IndexPath, animated: true)
-        print("DEBUG_PRINT:didSelectRowAt")
+        //print("DEBUG_PRINT:didSelectRowAt")
         if self.projectType < 3 {
             let projectTaskViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectTask") as! ProjectTaskController
             projectTaskViewController.projectId = self.selectProjects[indexPath.row].id!
@@ -228,7 +228,7 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        print("DEBUG_PRINT:editActionsForRowAt")
+        //print("DEBUG_PRINT:editActionsForRowAt")
         let projectId = self.selectProjects[indexPath.row].id!
         self.detailButton = UITableViewRowAction(style: .normal, title: "Detail") { (action, index) -> Void in
             let createProjectViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectDetail") as! CreateProjectController
@@ -240,19 +240,19 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
         
         self.leaveButton = UITableViewRowAction(style: .normal, title: "Leave") { (action, index) -> Void in
             
-            print("DEBUG_PRINT:call leave")
+            //print("DEBUG_PRINT:call leave")
             let onlyMember = self.selectProjects[indexPath.row].members.count == 1
             
             
             let path1 = Const.ProjectsPath + "/" + projectId + "/members/" + Const.user.id!
             let projectUserRef = Database.database().reference().child(path1)
             projectUserRef.removeValue()
-            print("DEBUG_PRINT:delete project->members->uid")
+            //print("DEBUG_PRINT:delete project->members->uid")
             
             let path2 = Const.UsersPath + "/" + Const.user.id! + "/projects/" + projectId
             let userProjectsRef = Database.database().reference().child(path2)
             userProjectsRef.removeValue()
-            print("DEBUG_PRINT:delete user->projects->projectid")
+            //print("DEBUG_PRINT:delete user->projects->projectid")
             
             var taskids :[String]=[]
             for taskid in self.selectProjects[indexPath.row].tasks.keys {
@@ -267,12 +267,12 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
             
             if onlyMember {
                 for taskid in self.selectProjects[indexPath.row].tasks.keys {
-                    print("DEBUG_PRINT:taskid:\(taskid)")
+                    //print("DEBUG_PRINT:taskid:\(taskid)")
                     Database.database().reference().child(Const.TasksPath).child(taskid).removeValue()
-                    print("DEBUG_PRINT:delete task")
+                    //print("DEBUG_PRINT:delete task")
                 }
                 Database.database().reference().child(Const.ProjectsPath).child(projectId).removeValue()
-                print("DEBUG_PRINT:delete project")
+                //print("DEBUG_PRINT:delete project")
             }
         }
         self.leaveButton.backgroundColor = UIColor.red

@@ -18,8 +18,11 @@ class Tasks: NSObject {
     var detail:String?
     var startDate:NSDate?
     var endDate:NSDate?
+    var realStartDate:NSDate?
+    var realEndDate:NSDate?
     var importance:Double?
     var status:Double?
+    var status2:Int?
     var chargers:[String:Bool]=[:]
 
     init(_ taskdata: DataSnapshot){
@@ -38,9 +41,18 @@ class Tasks: NSObject {
         self.detail = valueDictionary["detail"] as? String
         self.importance = valueDictionary["importance"] as? Double
         self.status = valueDictionary["status"] as? Double
+        self.status2 = valueDictionary["status2"] as? Int
         
         if let chargers = valueDictionary["chargers"] as? [String:Bool]{
             self.chargers = chargers
         }
+        
+        if let rsDate = valueDictionary["realStartDate"] as? String {
+            self.realStartDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(rsDate)!)
+        }
+        if let reDate = valueDictionary["realEndDate"] as? String {
+            self.realEndDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(reDate)!)
+        }
+        
     }
 }

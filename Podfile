@@ -10,5 +10,6 @@ target 'ProjectManager' do
   pod 'Firebase/Auth'
   pod 'Firebase/Database'
   pod 'Cosmos', '~> 11.0'
+  pod 'PopupDialog', '0.5.4'
 
 end

@@ -81,16 +81,20 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
             let projectRef = Database.database().reference().child(self.setPath!).child("tasks").child(self.taskId)
             let taskRef = Database.database().reference().child(Const.TasksPath).child(self.taskId)
             
+            
+            //print("DEBUG_PRINT:save Sdate:\(self.startDateP.date)(\(self.startDateP.date.timeIntervalSinceReferenceDate))")
+            //print("DEBUG_PRINT:save Edate:\(self.endDateP.date)(\(self.endDateP.date.timeIntervalSinceReferenceDate))")
             if mode == 0 {
                 print("DEBUG_PRINT:mode create")
                 let saveData = ["label":self.taskL.text!,
                                 "detail":self.detailT.text!,
                                 "project":self.projectId!,
-                                "status":2.0,
+                                "status":0.0,
+                                "status2":0,
                                 "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                                "endDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "endDate":String(self.endDateP.date.timeIntervalSinceReferenceDate),
                                 "importance":self.importanceV.rating] as [String : Any]
-                projectRef.setValue(2.0)
+                projectRef.setValue(0.0)
                 taskRef.setValue(saveData)
                 self.mode = 1
             } else {
@@ -98,7 +102,7 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
                 let saveData = ["label":self.taskL.text!,
                                 "detail":self.detailT.text!,
                                 "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                                "endDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
+                                "endDate":String(self.endDateP.date.timeIntervalSinceReferenceDate),
                                 "importance":self.importanceV.rating] as [String : Any]
                 taskRef.updateChildValues(saveData)
             }

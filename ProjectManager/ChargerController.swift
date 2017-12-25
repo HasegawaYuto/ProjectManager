@@ -25,10 +25,10 @@ class ChargerController: UIViewController, UITableViewDelegate,UITableViewDataSo
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         print("DEBUG_PRINT:didSelectRowAt")
         
-        let usersPath = Const.UsersPath + "/" + self.chargers[indexPath.row].id! + "/tasks/" + self.taskId
+        let usersPath = Const.UsersPath + "/" + self.chargers[indexPath.row].id! + "/tasks/" + self.taskId!
         let userRef = Database.database().reference().child(usersPath)
         
-        let tasksPath = Const.TasksPath + "/" + self.taskId + "/chargers/" + self.chargers[indexPath.row].id!
+        let tasksPath = Const.TasksPath + "/" + self.taskId! + "/chargers/" + self.chargers[indexPath.row].id!
         let taskRef = Database.database().reference().child(tasksPath)
         
         if self.chargers[indexPath.row].tasks[self.taskId] != nil {

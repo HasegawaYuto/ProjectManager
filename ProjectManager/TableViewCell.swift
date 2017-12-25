@@ -17,11 +17,13 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var importanceView: CosmosView!
     @IBOutlet weak var statusLabel2: UILabel!
     
-    var task:String = "task"
+    var task:String = "Task"
     var status:Double = -1
-    var subtext:String = "none"
+    var status2:Int = 7
+    //var subtext:String = "none"
     var importance:Double = 3
-    
+    var chargers :[String:Bool]=[:]
+    var users : [Users]=[]
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -34,44 +36,78 @@ class TableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
     
-    func setView(){
+    func setView(task:Tasks! = nil){
+        if task != nil {
+            self.users = Const.users.filter({$0.projects[task.project!]! >= 1})
+            self.task = task.label!
+            self.importance = task.importance!
+            self.status = task.status!
+            self.status2 = task.status2!
+            self.chargers = task.chargers
+        }
+        
+        
+        
+        
         self.actionTask.text = self.task
+        
+        if self.chargers.count > 0{
+            let chargersId = self.chargers.keys
+            var chargersName :[String]=[]
+            for charger in chargersId {
+                for user in self.users {
+                    if charger == user.id! {
+                        chargersName.append(user.name!)
+                    }
+                }
+            }
+            self.subLabel.text = chargersName.joined(separator: ",")
+        } else {
+            self.subLabel.text = "Charger"
+        }
+        
+        
         /*
-        0~1->%,working
-        2->locked
-        3->ready
+        0->locked
+        1->ready
+        2->stop
+        3->working
         4->review
         5->debug
         6->finish
-        7->stop
         */
-        self.statusLabel2.text = "status"
-        self.statusLabel.text = "%"
-        if self.status >= 0 && self.status <= 1 {
+        
+        if self.status == -1 {
+            self.statusLabel.text = "%"
+        } else {
             self.statusLabel.text = String(Int(self.status * 100))
-            self.statusLabel2.text = "Working"
-        }else if self.status == 2 {
-            self.statusLabel.text = "0"
-            self.statusLabel2.text = "Locked"
-        }else if self.status == 3 {
-            self.statusLabel.text = "0"
-            self.statusLabel2.text = "Ready"
-        }else if self.status == 4 {
-            self.statusLabel.text = "100"
-            self.statusLabel2.text = "Review"
-        }else if self.status == 5 {
-            self.statusLabel.text = "-"
-            self.statusLabel2.text = "Debug"
-        }else if self.status == 6 {
-            self.statusLabel.text = "-"
-            self.statusLabel2.text = "Finish"
-        }else if self.status == 7 {
-            self.statusLabel.text = "-"
-            self.statusLabel2.text = "Stop"
         }
         
-        self.subLabel.text = self.subtext
+        switch(self.status2){
+            case 0:
+                self.statusLabel2.text = "Locked"
+            case 1:
+                self.statusLabel2.text = "Ready"
+            case 2:
+                self.statusLabel2.text = "Stop"
+            case 3:
+                self.statusLabel2.text = "Working"
+            case 4:
+                self.statusLabel2.text = "Review"
+            case 5:
+                self.statusLabel2.text = "Debug"
+                self.statusLabel2.backgroundColor = UIColor.red
+                self.statusLabel.backgroundColor = UIColor.red
+            case 6:
+                self.statusLabel2.text = "Finish"
+            case 7:
+                self.statusLabel2.text = "Status"
+            default:
+                self.statusLabel2.text = "Locked"
+        }
+        
         self.importanceView.rating = self.importance
+
         self.statusLabel.adjustsFontSizeToFitWidth = true
         self.statusLabel2.adjustsFontSizeToFitWidth = true
         self.subLabel.adjustsFontSizeToFitWidth = true

@@ -34,7 +34,7 @@ struct Const {
     }
     
     static func getTermOfTwoDate( _ date1 : NSDate , _ date2:NSDate)->Int{
-        print("DEBUG_PRINT:call :getTermOfTwoDate")
+        //print("DEBUG_PRINT:call :getTermOfTwoDate")
         let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
         let Date1 = Const.getLatestMidnight(date1)
         
@@ -64,18 +64,18 @@ struct Const {
     }
     
     static func addProjectData( _ theProject:Projects){
-        print("DEBUG_PRINT:call addProjectData")
+        //print("DEBUG_PRINT:call addProjectData")
         let temp = Const.projects.filter({$0.id == theProject.id!})
         if temp.count == 0 {
             Const.projects.insert(theProject,at:0)
         }else{
             Const.reloadProjectData(theProject)
         }
-        print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
+        //print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
     }
     
     static func reloadProjectData( _ theProject:Projects){
-        print("DEBUG_PRINT:call reloadProjectData")
+        //print("DEBUG_PRINT:call reloadProjectData")
         var index = -1
         for project in Const.projects {
             index += 1
@@ -85,11 +85,11 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
+        //print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
     }
     
     static func removeProjectData( _ theProject:Projects){
-        print("DEBUG_PRINT:call removeProjectData")
+        //print("DEBUG_PRINT:call removeProjectData")
         var index = -1
         for project in Const.projects {
             index += 1
@@ -98,25 +98,25 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
+        //print("DEBUG_PRINT:call Const.projects:\(Const.projects.count)")
     }
     
     static func addUserData( _ theUser:Users){
-        print("DEBUG_PRINT:call addUserData")
+        //print("DEBUG_PRINT:call addUserData")
         let temp = Const.users.filter({$0.id == theUser.id!})
         if temp.count == 0 {
             Const.users.insert(theUser,at:0)
-            print("DEBUG_PRINT:call addUserData add")
+            //print("DEBUG_PRINT:call addUserData add")
         }else{
-            print("DEBUG_PRINT:call addUserData reload")
+            //print("DEBUG_PRINT:call addUserData reload")
             Const.reloadUserData(theUser)
         }
-        print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
+        //print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
     }
     
     
     static func reloadUserData( _ theUser:Users){
-        print("DEBUG_PRINT:call reloadUserData")
+        //print("DEBUG_PRINT:call reloadUserData")
         var index = -1
         for user in Const.users {
             index += 1
@@ -126,11 +126,11 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
+        //print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
     }
     
     static func removeUserData( _ theUser:Users){
-        print("DEBUG_PRINT:call removeUserData")
+        //print("DEBUG_PRINT:call removeUserData")
         var index = -1
         for user in Const.users {
             index += 1
@@ -139,25 +139,25 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
+        //print("DEBUG_PRINT:call Const.users:\(Const.users.count)")
     }
     
     static func addTaskData( _ theTask:Tasks){
-        print("DEBUG_PRINT:call addTaskData")
+        //print("DEBUG_PRINT:call addTaskData")
         let temp = Const.tasks.filter({$0.id == theTask.id!})
         if temp.count == 0 {
             Const.tasks.insert(theTask,at:0)
-            print("DEBUG_PRINT:call addTaskData add")
+            //print("DEBUG_PRINT:call addTaskData add")
         }else{
-            print("DEBUG_PRINT:call addTaskData reload")
+            //print("DEBUG_PRINT:call addTaskData reload")
             Const.reloadTaskData(theTask)
         }
-        print("DEBUG_PRINT:call Const.tasks:\(Const.tasks.count)")
+        //print("DEBUG_PRINT:call Const.tasks:\(Const.tasks.count)")
     }
     
     
     static func reloadTaskData( _ theTask:Tasks){
-        print("DEBUG_PRINT:call reloadTaskData")
+        //print("DEBUG_PRINT:call reloadTaskData")
         var index = -1
         for task in Const.tasks {
             index += 1
@@ -167,11 +167,11 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.Tasks:\(Const.tasks.count)")
+        //print("DEBUG_PRINT:call Const.Tasks:\(Const.tasks.count)")
     }
     
     static func removeTaskData( _ theTask:Tasks){
-        print("DEBUG_PRINT:call removeTaskData")
+        //print("DEBUG_PRINT:call removeTaskData")
         var index = -1
         for task in Const.tasks {
             index += 1
@@ -180,7 +180,7 @@ struct Const {
                 break
             }
         }
-        print("DEBUG_PRINT:call Const.tasks:\(Const.tasks.count)")
+        //print("DEBUG_PRINT:call Const.tasks:\(Const.tasks.count)")
     }
     
 }

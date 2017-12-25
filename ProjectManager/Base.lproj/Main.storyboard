@@ -159,9 +159,8 @@
                                 <rect key="frame" x="26" y="71" width="323" height="29"/>
                                 <segments>
                                     <segment title="Start"/>
-                                    <segment title="Charger"/>
                                     <segment title="Status"/>
-                                    <segment title="Star"/>
+                                    <segment title="Importance"/>
                                 </segments>
                             </segmentedControl>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="VJQ-5I-evu">
@@ -171,34 +170,52 @@
                                     <constraint firstAttribute="width" constant="120" id="wo8-2C-lDv"/>
                                 </constraints>
                             </tableView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="FnN-mb-i2F">
-                                <rect key="frame" x="136" y="119" width="239" height="528"/>
-                                <color key="backgroundColor" red="1" green="0.95118333740000005" blue="0.1237785" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="b78-kf-H5P">
-                                    <size key="itemSize" width="50" height="50"/>
-                                    <size key="headerReferenceSize" width="0.0" height="0.0"/>
-                                    <size key="footerReferenceSize" width="0.0" height="0.0"/>
-                                    <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
-                                </collectionViewFlowLayout>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="2" contentMode="scaleToFill" restorationIdentifier="Body" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="FnN-mb-i2F">
+                                <rect key="frame" x="136" y="169" width="400" height="478"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="400" id="M5o-uF-AGT"/>
+                                </constraints>
+                                <collectionViewLayout key="collectionViewLayout" id="8xL-C9-ThZ" customClass="BidirectionalCollectionLayout" customModule="ProjectManager" customModuleProvider="target"/>
                                 <cells/>
+                            </collectionView>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="Header" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6xO-2e-qCR">
+                                <rect key="frame" x="136" y="119" width="239" height="50"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="rlu-Xc-WXi"/>
+                                </constraints>
+                                <collectionViewLayout key="collectionViewLayout" id="x5S-yb-1LO" customClass="BidirectionalCollectionLayout" customModule="ProjectManager" customModuleProvider="target"/>
+                                <cells>
+                                    <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="YE3-zi-Ogx">
+                                        <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                                            <rect key="frame" x="0.0" y="0.0" width="50" height="50"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                        </view>
+                                    </collectionViewCell>
+                                </cells>
                             </collectionView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="VJQ-5I-evu" firstAttribute="top" secondItem="Vl4-XV-AIR" secondAttribute="bottom" constant="20" id="4mY-pu-aIL"/>
                             <constraint firstItem="kUn-dI-XoM" firstAttribute="centerY" secondItem="g1p-pa-3B0" secondAttribute="centerY" id="FY5-lk-xBh"/>
-                            <constraint firstItem="FnN-mb-i2F" firstAttribute="top" secondItem="VJQ-5I-evu" secondAttribute="top" id="I9m-OW-vO7"/>
                             <constraint firstItem="FnN-mb-i2F" firstAttribute="bottom" secondItem="VJQ-5I-evu" secondAttribute="bottom" id="Khe-d3-EUi"/>
                             <constraint firstItem="Vl4-XV-AIR" firstAttribute="leading" secondItem="88H-hu-oEY" secondAttribute="leadingMargin" constant="10" id="LLz-mQ-0Ae"/>
                             <constraint firstItem="FnN-mb-i2F" firstAttribute="leading" secondItem="VJQ-5I-evu" secondAttribute="trailing" id="aMW-Ut-FiP"/>
                             <constraint firstItem="kUn-dI-XoM" firstAttribute="leading" secondItem="g1p-pa-3B0" secondAttribute="trailing" constant="10" id="aWh-fM-yqG"/>
+                            <constraint firstItem="6xO-2e-qCR" firstAttribute="leading" secondItem="VJQ-5I-evu" secondAttribute="trailing" id="aYq-Yn-5kj"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Vl4-XV-AIR" secondAttribute="trailing" constant="10" id="aiU-SS-tzE"/>
                             <constraint firstAttribute="trailingMargin" secondItem="kUn-dI-XoM" secondAttribute="trailing" constant="10" id="bCA-kF-tAG"/>
                             <constraint firstItem="SgM-cF-XmE" firstAttribute="top" secondItem="VJQ-5I-evu" secondAttribute="bottom" constant="20" id="dLk-tP-AOd"/>
                             <constraint firstItem="Vl4-XV-AIR" firstAttribute="top" secondItem="kUn-dI-XoM" secondAttribute="bottom" constant="5" id="dy9-Q1-iKZ"/>
+                            <constraint firstItem="FnN-mb-i2F" firstAttribute="top" secondItem="6xO-2e-qCR" secondAttribute="bottom" id="ebe-lb-3FN"/>
                             <constraint firstItem="kUn-dI-XoM" firstAttribute="top" secondItem="p1j-8O-iyg" secondAttribute="bottom" constant="10" id="jYf-66-Srp"/>
+                            <constraint firstItem="6xO-2e-qCR" firstAttribute="top" secondItem="VJQ-5I-evu" secondAttribute="top" id="nzM-lH-TvS"/>
                             <constraint firstItem="g1p-pa-3B0" firstAttribute="leading" secondItem="88H-hu-oEY" secondAttribute="leadingMargin" constant="10" id="oH9-Gi-EB1"/>
-                            <constraint firstAttribute="trailing" secondItem="FnN-mb-i2F" secondAttribute="trailing" id="p9F-Hi-Yy6"/>
+                            <constraint firstAttribute="trailing" secondItem="6xO-2e-qCR" secondAttribute="trailing" id="sjM-QM-ooK"/>
                             <constraint firstItem="VJQ-5I-evu" firstAttribute="leading" secondItem="88H-hu-oEY" secondAttribute="leadingMargin" id="tcc-n2-bdg"/>
                         </constraints>
                     </view>
@@ -218,6 +235,8 @@
                     </navigationItem>
                     <connections>
                         <outlet property="addTaskButton" destination="wem-Z1-mep" id="jCn-PY-DzQ"/>
+                        <outlet property="dateL" destination="6xO-2e-qCR" id="qTo-ko-n57"/>
+                        <outlet property="dateT" destination="FnN-mb-i2F" id="Cns-Uz-SKU"/>
                         <outlet property="progressLabel" destination="kUn-dI-XoM" id="iWo-Ff-CF4"/>
                         <outlet property="projectProgress" destination="sbj-rt-gC3" id="mvZ-EZ-Eff"/>
                         <outlet property="projectTitle" destination="dkc-1i-j7o" id="Ety-HP-gpu"/>
