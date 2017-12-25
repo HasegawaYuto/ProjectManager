@@ -15,6 +15,8 @@ class PopUp: UIViewController {
     
     @IBOutlet weak var taskTitle: UILabel!
     @IBOutlet weak var slider: UISlider!
+    @IBOutlet weak var circleView: UIView!
+    @IBOutlet weak var percentLabel: UILabel!
     
     @IBOutlet weak var readyButton: UIButton!
     @IBOutlet weak var initButton: UIButton!
@@ -33,6 +35,7 @@ class PopUp: UIViewController {
     var status2: Int!
     var status:Double!
     var realStartDate:NSDate!
+    var layers:[CAShapeLayer]=[]
     
     @IBAction func handleReadyButton(_ sender: Any) {
         print("DEBUG_PRINT:self.initButton")
@@ -76,6 +79,10 @@ class PopUp: UIViewController {
     @IBAction func handleFinishButton(_ sender: Any) {
         let path = Const.TasksPath + "/" + self.task.id! + "/status2"
         Database.database().reference().child(path).setValue(6)
+        
+        let now = NSDate.timeIntervalSinceReferenceDate
+        let path2 = Const.TasksPath + "/" + self.task.id! + "/realEndDate"
+        Database.database().reference().child(path2).setValue(String(now))
     }
     
     @IBAction func handleDebugButton(_ sender: Any) {
@@ -158,6 +165,13 @@ class PopUp: UIViewController {
             self.slider.isHidden = false
             self.slider.value = Float(self.task.status!)
         }
+        
+        //self.drawCircle()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.drawCircle()
     }
     
     func onChangeValueSlider(_ sender : UISlider){
@@ -165,6 +179,11 @@ class PopUp: UIViewController {
         let path = Const.TasksPath + "/" + self.task.id! + "/status"
         Database.database().reference().child(path).setValue(Double(sender.value))
         self.status = Double(sender.value)
+        
+        let path2 = Const.ProjectsPath + "/" + self.task.project! + "/tasks/" + self.task.id!
+        Database.database().reference().child(path2).setValue(Double(sender.value))
+        
+        self.drawCircle()
         
         if sender.value == 1.0 {
             self.reviewButton.isHidden = false
@@ -186,6 +205,33 @@ class PopUp: UIViewController {
         self.finishHeight.constant = 0
         self.debugButton.isHidden = true
         self.debugHeight.constant = 0
+    }
+    
+    func drawCircle(){
+        if self.layers.count > 0 {
+            self.layers.forEach {
+                $0.removeFromSuperlayer()
+            }
+        }
+        let pi = CGFloat(Double.pi)
+        let start:CGFloat = -1 *  pi * 0.5
+        let end :CGFloat = ( -1 * pi * 0.5 ) + 2 * pi * CGFloat(self.status)
+        
+        //let w0 = self.circleView.frame.origin.x
+        let w = self.circleView.frame.width
+        let h = self.circleView.frame.height
+        
+        let path: UIBezierPath = UIBezierPath();
+        path.move(to: CGPoint(x: w/2 , y: h/2))
+        path.addArc(withCenter: CGPoint(x: w/2 , y: h/2), radius: w/2 , startAngle: start, endAngle: end, clockwise: true)
+        
+        let layer = CAShapeLayer()
+        layer.fillColor = UIColor.orange.cgColor
+        layer.path = path.cgPath
+        
+        self.circleView.layer.insertSublayer(layer,at:0)
+        self.percentLabel.text = String(Int(100 * self.status)) + "%"
+        self.layers.append(layer)
     }
     
     

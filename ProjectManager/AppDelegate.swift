@@ -26,12 +26,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let mainSB = UIStoryboard(name: "Main", bundle: nil)
         let chartView = mainSB.instantiateViewController(withIdentifier: "PersonalTask")
         let personalView = mainSB.instantiateViewController(withIdentifier : "Personal")
-        //let navigationController1 = UINavigationController(rootViewController: chartView)
+        let navigationController1 = UINavigationController(rootViewController: chartView)
         let navigationController2 = UINavigationController(rootViewController: personalView)
         chartView.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 1)
         personalView.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 2)
         
-        viewControllers.append(chartView)
+        viewControllers.append(navigationController1)
         viewControllers.append(navigationController2)
 
         AppDelegate.tabBarController.setViewControllers(viewControllers, animated: false)

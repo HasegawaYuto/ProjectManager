@@ -18,6 +18,7 @@ class TableViewCell: UITableViewCell {
     @IBOutlet weak var statusLabel2: UILabel!
     
     var task:String = "Task"
+    var type:Int!
     var status:Double = -1
     var status2:Int = 7
     //var subtext:String = "none"
@@ -51,19 +52,23 @@ class TableViewCell: UITableViewCell {
         
         self.actionTask.text = self.task
         
-        if self.chargers.count > 0{
-            let chargersId = self.chargers.keys
-            var chargersName :[String]=[]
-            for charger in chargersId {
-                for user in self.users {
-                    if charger == user.id! {
-                        chargersName.append(user.name!)
+        if self.type == 0 {
+            if self.chargers.count > 0{
+                let chargersId = self.chargers.keys
+                var chargersName :[String]=[]
+                for charger in chargersId {
+                    for user in self.users {
+                        if charger == user.id! {
+                            chargersName.append(user.name!)
+                        }
                     }
                 }
+                self.subLabel.text = chargersName.joined(separator: ",")
+            } else {
+                self.subLabel.text = "Charger"
             }
-            self.subLabel.text = chargersName.joined(separator: ",")
-        } else {
-            self.subLabel.text = "Charger"
+        } else if self.type == 1 {
+            
         }
         
         

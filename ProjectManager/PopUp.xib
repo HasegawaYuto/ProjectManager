@@ -12,12 +12,14 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="PopUp" customModule="ProjectManager" customModuleProvider="target">
             <connections>
+                <outlet property="circleView" destination="sY3-p1-uU4" id="5Er-Mt-bFq"/>
                 <outlet property="debugButton" destination="3ZZ-tA-dni" id="wsQ-H3-lGo"/>
                 <outlet property="debugHeight" destination="UbZ-yW-4Pb" id="ZUk-bF-NCO"/>
                 <outlet property="finishButton" destination="BSQ-u5-ctW" id="zdd-X0-P15"/>
                 <outlet property="finishHeight" destination="YlG-aX-OTC" id="1Xw-wK-Zzx"/>
                 <outlet property="initButton" destination="4eb-od-XCU" id="0dJ-wv-8x3"/>
                 <outlet property="initHeight" destination="J6M-et-Lod" id="jfH-Dv-HuC"/>
+                <outlet property="percentLabel" destination="l6d-ST-Add" id="Q6x-Op-2sN"/>
                 <outlet property="readyButton" destination="hnH-Jv-fjK" id="rhf-ge-F7v"/>
                 <outlet property="readyHeight" destination="2ZR-v3-dGM" id="CfM-1h-Luh"/>
                 <outlet property="reviewButton" destination="DMX-Xh-nNc" id="q2B-Tf-uPg"/>
@@ -60,9 +62,19 @@
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sY3-p1-uU4">
                     <rect key="frame" x="60.5" y="50" width="253.5" height="253.5"/>
-                    <color key="backgroundColor" red="1" green="0.53226106709999998" blue="0.060862602680000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="l6d-ST-Add">
+                            <rect key="frame" x="117" y="108" width="20" height="38.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="32"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="sY3-p1-uU4" secondAttribute="height" multiplier="1:1" id="3UX-E5-d9h"/>
+                        <constraint firstItem="l6d-ST-Add" firstAttribute="centerX" secondItem="sY3-p1-uU4" secondAttribute="centerX" id="j74-49-ifI"/>
+                        <constraint firstItem="l6d-ST-Add" firstAttribute="centerY" secondItem="sY3-p1-uU4" secondAttribute="centerY" id="lHn-wz-ieN"/>
                     </constraints>
                 </view>
                 <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="hnH-Jv-fjK">
