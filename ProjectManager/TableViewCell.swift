@@ -53,7 +53,7 @@ class TableViewCell: UITableViewCell {
         self.actionTask.text = self.task
         
         if self.type == 0 {
-            if self.chargers.count > 0{
+            if task != nil {
                 let chargersId = self.chargers.keys
                 var chargersName :[String]=[]
                 for charger in chargersId {
@@ -63,7 +63,11 @@ class TableViewCell: UITableViewCell {
                         }
                     }
                 }
-                self.subLabel.text = chargersName.joined(separator: ",")
+                if chargersName.count > 0  && task.chargers.count > 0{
+                    self.subLabel.text = chargersName.joined(separator: ",")
+                } else {
+                    self.subLabel.text = "No Charger"
+                }
             } else {
                 self.subLabel.text = "Charger"
             }

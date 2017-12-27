@@ -28,8 +28,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let personalView = mainSB.instantiateViewController(withIdentifier : "Personal")
         let navigationController1 = UINavigationController(rootViewController: chartView)
         let navigationController2 = UINavigationController(rootViewController: personalView)
-        chartView.tabBarItem = UITabBarItem(tabBarSystemItem: .search, tag: 1)
-        personalView.tabBarItem = UITabBarItem(tabBarSystemItem: .contacts, tag: 2)
+        chartView.tabBarItem = UITabBarItem(title:"Tasks", image: UIImage(named: "list"),tag: 0 )
+        personalView.tabBarItem = UITabBarItem(title: "Personal", image: UIImage(named: "man"), tag: 1 )
         
         viewControllers.append(navigationController1)
         viewControllers.append(navigationController2)

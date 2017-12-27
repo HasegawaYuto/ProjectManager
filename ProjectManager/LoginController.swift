@@ -114,16 +114,11 @@ class LoginController: UIViewController, UITextFieldDelegate {
                 self.dismiss(animated: true, completion: nil)
             } )
         }
-        /*
-        print("DEBUG_PRINT:will view TabBarController")
-        AppDelegate.tabBarController.selectedIndex = 1
-        print("DEBUG_PRINT:set tab index")
-        self.dismiss(animated: true, completion: nil)
-        print("DEBUG_PRINT:dismiss modal")
-        self.view.window?.rootViewController = AppDelegate.tabBarController
-        print("DEBUG_PRINT:rootController TabBar")
-        self.view.window?.makeKeyAndVisible()
-        */
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("DEBUG_PRINT:viewWillAppear")
     }
     
     

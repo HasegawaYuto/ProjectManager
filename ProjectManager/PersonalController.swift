@@ -20,7 +20,7 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     //var projectId : String?
     var observeUserBool:Bool = false
     var observeProjectBool:Bool = false
-    var observeInvitedBool:Bool = false
+    //var observeInvitedBool:Bool = false
     //var projectsIds : [String] = []
     var selectProjects:[Projects]=[]
     var projectType : Int = 0
@@ -34,29 +34,36 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     var refuseButton: UITableViewRowAction!
 
     @IBAction func handleLogOut(_ sender: Any) {
-        //print("DEBUG_PRINT:call log out")
+        print("DEBUG_PRINT:call log out")
         if self.observeUserBool {
             Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
-            //print("DEBUG_PRINT:remove observer name")
             self.observeUserBool = false
         }
+        print("DEBUG_PRINT:call phase1")
         if self.observeProjectBool {
             Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
-            //print("DEBUG_PRINT:remove observer projects")
-            
+            Database.database().reference().child(Const.TasksPath).removeAllObservers()
             self.observeProjectBool = false
         }
-        Const.projects = []
-        Const.tasks = []
-        Const.users = []
-        Const.user = nil
-        self.sc.selectedSegmentIndex = 0
-        self.tableV.reloadData()
-        
         try! Auth.auth().signOut()
+        print("DEBUG_PRINT:call phase2")
+        self.selectProjects = []
+        Const.projects = []
+        print("DEBUG_PRINT:call phase3")
+        Const.tasks = []
+        print("DEBUG_PRINT:call phase4")
+        Const.users = []
+        print("DEBUG_PRINT:call phase5")
+        self.sc.selectedSegmentIndex = 0
+        print("DEBUG_PRINT:call phase7")
+        self.tableV.reloadData()
+        print("DEBUG_PRINT:call phase8")
         
         // ログイン画面を表示する
         let loginViewController = self.storyboard?.instantiateViewController(withIdentifier: "Login")
+        print("DEBUG_PRINT:call phase9")
+        Const.user = nil
+        print("DEBUG_PRINT:call phase6")
         self.present(loginViewController!, animated: true, completion: nil)
     }
     
@@ -76,12 +83,12 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
-        Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
-        Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
-        self.observeUserBool = false
-        self.observeProjectBool = false
-        
+        if Auth.auth().currentUser != nil {
+            Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
+            Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
+            self.observeUserBool = false
+            self.observeProjectBool = false
+        }
     }
     
     
@@ -183,9 +190,12 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath as IndexPath)
-        cell.textLabel?.text = self.selectProjects[indexPath.row].title!
+        if self.selectProjects[indexPath.row].title != "" {
+            cell.textLabel?.text = self.selectProjects[indexPath.row].title!
+        } else {
+            cell.textLabel?.text = "No Project Title"
+        }
         cell.textLabel?.textAlignment = NSTextAlignment.center
-        cell.backgroundColor = UIColor.yellow
         return cell
     }
     

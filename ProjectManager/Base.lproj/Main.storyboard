@@ -131,10 +131,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="g1p-pa-3B0">
-                                <rect key="frame" x="26" y="43" width="253" height="10"/>
+                                <rect key="frame" x="26" y="43" width="238" height="10"/>
                                 <subviews>
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="sbj-rt-gC3">
-                                        <rect key="frame" x="0.0" y="0.0" width="253" height="10"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="238" height="10"/>
                                     </progressView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -146,10 +146,10 @@
                                     <constraint firstItem="sbj-rt-gC3" firstAttribute="top" secondItem="g1p-pa-3B0" secondAttribute="top" id="rXY-BY-mvY"/>
                                 </constraints>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kUn-dI-XoM">
-                                <rect key="frame" x="289" y="30" width="60" height="36"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="100%" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kUn-dI-XoM">
+                                <rect key="frame" x="274" y="30" width="75" height="36"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="60" id="oqg-Uj-XXe"/>
+                                    <constraint firstAttribute="width" constant="75" id="oqg-Uj-XXe"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <nil key="textColor"/>
