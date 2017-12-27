@@ -11,5 +11,6 @@ target 'ProjectManager' do
   pod 'Firebase/Database'
   pod 'Cosmos', '~> 11.0'
   pod 'PopupDialog', '0.5.4'
+  pod 'OAuthSwift', '1.1.2'
 
 end

@@ -45,6 +45,7 @@ PODS:
     - nanopb/encode (= 0.3.8)
   - nanopb/decode (0.3.8)
   - nanopb/encode (0.3.8)
+  - OAuthSwift (1.1.2)
   - PopupDialog (0.5.4)
 
 DEPENDENCIES:
@@ -53,6 +54,7 @@ DEPENDENCIES:
   - Firebase/Auth
   - Firebase/Core
   - Firebase/Database
+  - OAuthSwift (= 1.1.2)
   - PopupDialog (= 0.5.4)
 
 SPEC CHECKSUMS:
@@ -67,8 +69,9 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: ebaa1f79a5366922c1735f1566901f50beba23b7
   leveldb-library: 4f9eedf84ab46b4fa3b7893bf30714b2a1a74022
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
+  OAuthSwift: 5aa5659984d3ca3206ba636a9e7a9c6626b2e8bd
   PopupDialog: 75cf955693590b0cb2fdde00223fb65d99c57247
 
-PODFILE CHECKSUM: d94b4a6a4bc2c8e21ebe3ef6cfd2321c124cd3cd
+PODFILE CHECKSUM: 63d16ec45ad1010ae82bafd57d9035b66c1ad1f5
 
 COCOAPODS: 1.1.1
