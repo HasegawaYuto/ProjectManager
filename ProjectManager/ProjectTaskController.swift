@@ -77,7 +77,6 @@ class ProjectTaskController: UIViewController {
     
     
     func superReload(){
-        //print("DEBUG_PRINT:cell superReload")
         let theProject = Const.projects.filter({$0.id == self.projectId})[0]
         let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
         let users = Const.users.filter({$0.projects[self.projectId]! >= 1})
@@ -87,13 +86,18 @@ class ProjectTaskController: UIViewController {
             self.taskTable.reloadData()
             self.dateL.reloadData()
             self.dateT.reloadData()
-            var bunbo:Double = 0
-            var bunsi:Double = 0
+            var bunbo:Double = 0.0
+            var bunsi:Double = 0.0
             for task in self.tasks {
                 bunbo = bunbo + task.importance!
                 bunsi = bunsi + ( task.importance! * task.status!)
             }
-            let projectProgress = bunsi / bunbo
+            var projectProgress = 0.0
+            if bunbo == 0.0 {
+                projectProgress = 0.0
+            }else{
+                projectProgress = bunsi / bunbo
+            }
             self.projectProgress.progress = Float(projectProgress)
             self.progressLabel.text = String(Int(projectProgress * 100)) + "%"
             
@@ -223,7 +227,13 @@ extension ProjectTaskController: UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
         cell.type = 0
         cell.setView()
+        let red :CGFloat = 157 / 255
+        let green :CGFloat = 204 / 255
+        let blue :CGFloat = 224 / 255
+        //cell.backgroundColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         let headerView: UIView = cell.contentView
+        headerView.backgroundColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
+        //headerView.backgroundColor = UIColor.white
         return headerView
     }
     

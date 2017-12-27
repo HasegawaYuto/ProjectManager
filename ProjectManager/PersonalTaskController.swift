@@ -210,7 +210,11 @@ extension PersonalTaskController: UITableViewDelegate {
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
         cell.type = 1
         cell.setView()
+        let red :CGFloat = 157 / 255
+        let green :CGFloat = 204 / 255
+        let blue :CGFloat = 224 / 255
         let headerView: UIView = cell.contentView
+        headerView.backgroundColor = UIColor(red: red, green: green, blue: blue, alpha: 1.0)
         return headerView
     }
     

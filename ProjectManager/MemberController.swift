@@ -110,8 +110,7 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
             }
         }
         if !flag {
-            typeButton.backgroundColor = UIColor.yellow
-            //typeButton.textColor = UIColor.black
+            typeButton.backgroundColor = UIColor.blue
         }else{
             typeButton.backgroundColor = UIColor.clear
         }
@@ -140,11 +139,13 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
         let cell = tableView.dequeueReusableCell(withIdentifier: "MemberCell", for: indexPath as IndexPath)
         let theMember = self.sortUsers[indexPath.row]
         let flag = theMember.projects[self.projectId]! == 1
-        cell.textLabel?.text = theMember.name
+        //cell.textLabel?.text = theMember.name
         if !flag {
-            cell.backgroundColor = UIColor.yellow
+            //cell.backgroundColor = UIColor.yellow
+            cell.textLabel?.text = "【★】" + theMember.name!
         }else{
-            cell.backgroundColor = UIColor.clear
+            //cell.backgroundColor = UIColor.clear
+            cell.textLabel?.text = theMember.name
         }
         return cell
     }

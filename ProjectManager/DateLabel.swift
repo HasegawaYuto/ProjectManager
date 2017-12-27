@@ -53,12 +53,24 @@ class DateLabel: UICollectionViewCell {
         let components = calendar.components(NSCalendar.Unit.weekday, from: calcDate as Date)
         if components.weekday! == 1 {
             self.backgroundColor = UIColor.red
+            self.yearL.textColor = UIColor.white
+            self.monthL.textColor = UIColor.white
+            self.dayL.textColor = UIColor.white
+            self.dayWL.textColor = UIColor.white
         }
         if components.weekday! == 7 {
             self.backgroundColor = UIColor.blue
+            self.yearL.textColor = UIColor.white
+            self.monthL.textColor = UIColor.white
+            self.dayL.textColor = UIColor.white
+            self.dayWL.textColor = UIColor.white
         }
         if components.weekday! > 1 && components.weekday! < 7 {
             self.backgroundColor = UIColor.white
+            self.yearL.textColor = UIColor.black
+            self.monthL.textColor = UIColor.black
+            self.dayL.textColor = UIColor.black
+            self.dayWL.textColor = UIColor.black
         }
         
         

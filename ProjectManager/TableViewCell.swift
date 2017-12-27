@@ -38,6 +38,7 @@ class TableViewCell: UITableViewCell {
     }
     
     func setView(task:Tasks! = nil){
+        print("DEBUG_PRINT:call setView")
         if task != nil {
             self.users = Const.users.filter({$0.projects[task.project!]! >= 1})
             self.task = task.label!
@@ -106,20 +107,46 @@ class TableViewCell: UITableViewCell {
         switch(self.status2){
             case 0:
                 self.statusLabel2.text = "Locked"
+                self.statusLabel2.backgroundColor = UIColor.white
+                self.statusLabel.backgroundColor = UIColor.white
+                self.statusLabel2.textColor = UIColor.black
+                self.statusLabel.textColor = UIColor.black
             case 1:
                 self.statusLabel2.text = "Ready"
+                self.statusLabel2.backgroundColor = UIColor.green
+                self.statusLabel.backgroundColor = UIColor.green
+                self.statusLabel2.textColor = UIColor.black
+                self.statusLabel.textColor = UIColor.black
             case 2:
                 self.statusLabel2.text = "Stop"
+                self.statusLabel2.backgroundColor = UIColor.gray
+                self.statusLabel.backgroundColor = UIColor.gray
+                self.statusLabel2.textColor = UIColor.black
+                self.statusLabel.textColor = UIColor.black
             case 3:
                 self.statusLabel2.text = "Working"
+                self.statusLabel2.backgroundColor = UIColor.yellow
+                self.statusLabel.backgroundColor = UIColor.yellow
+                self.statusLabel2.textColor = UIColor.black
+                self.statusLabel.textColor = UIColor.black
             case 4:
                 self.statusLabel2.text = "Review"
+                self.statusLabel2.backgroundColor = UIColor.purple
+                self.statusLabel.backgroundColor = UIColor.purple
+                self.statusLabel2.textColor = UIColor.white
+                self.statusLabel.textColor = UIColor.white
             case 5:
                 self.statusLabel2.text = "Debug"
                 self.statusLabel2.backgroundColor = UIColor.red
                 self.statusLabel.backgroundColor = UIColor.red
+                self.statusLabel2.textColor = UIColor.white
+                self.statusLabel.textColor = UIColor.white
             case 6:
                 self.statusLabel2.text = "Finish"
+                self.statusLabel2.backgroundColor = UIColor.cyan
+                self.statusLabel.backgroundColor = UIColor.cyan
+                self.statusLabel2.textColor = UIColor.black
+                self.statusLabel.textColor = UIColor.black
             case 7:
                 self.statusLabel2.text = "Status"
             default:
