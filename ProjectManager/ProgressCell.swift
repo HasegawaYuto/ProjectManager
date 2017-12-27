@@ -28,12 +28,12 @@ class ProgressCell: UICollectionViewCell {
         // Initialization code
     }
     
-    func setProgress(_ project:Projects, _ task:Tasks , _ term : Int){
+    func setProgress(_ planStart:NSDate!, _ task:Tasks , _ term : Int){
         //print("DEBUG_PRINT:call setProgress:\(term)")
         
         let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
-        let projectStart = project.startDate!
-        let theDay = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: projectStart as Date)! as NSDate
+        //let projectStart = project.startDate!
+        let theDay = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: planStart as Date)! as NSDate
         let theDayStart = Const.getLatestMidnight(theDay)
         let theDayEnd = Const.getNextMidnight(theDay)
         let oneDayTerm = theDayEnd.timeIntervalSinceReferenceDate - theDayStart.timeIntervalSinceReferenceDate
@@ -66,7 +66,7 @@ class ProgressCell: UICollectionViewCell {
             }
         }
         
-        if task.realStartDate != nil && task.realStartDate!.timeIntervalSinceReferenceDate < theDayEnd.timeIntervalSinceReferenceDate {
+        if task.realStartDate != nil && task.realStartDate!.timeIntervalSinceReferenceDate <= theDayEnd.timeIntervalSinceReferenceDate {
             var realEndDate:NSDate!
             if task.realEndDate != nil {
                 realEndDate = task.realEndDate!
@@ -82,7 +82,7 @@ class ProgressCell: UICollectionViewCell {
                 let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
                 self.leftSideA.constant = CGFloat(cellLeftMargin)
             }
-            if realEndDate.timeIntervalSinceReferenceDate > theDayStart.timeIntervalSinceReferenceDate {
+            if realEndDate.timeIntervalSinceReferenceDate >= theDayStart.timeIntervalSinceReferenceDate {
                 self.actuallyProgress.isHidden = false
                 if self.isInDate(realEndDate,theDayStart,theDayEnd) {
                     let taskEndFromTheMidnight = theDayEnd.timeIntervalSinceReferenceDate - taskRealEnd

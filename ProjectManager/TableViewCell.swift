@@ -68,7 +68,18 @@ class TableViewCell: UITableViewCell {
                 self.subLabel.text = "Charger"
             }
         } else if self.type == 1 {
-            
+            if task != nil {
+                var projectName = ""
+                for project in Const.projects {
+                    if project.id == task.project {
+                        projectName = project.title!
+                        break
+                    }
+                }
+                self.subLabel.text = projectName
+            }else{
+                self.subLabel.text = "Project"
+            }
         }
         
         

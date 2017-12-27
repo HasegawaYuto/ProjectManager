@@ -38,15 +38,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         if Auth.auth().currentUser != nil {
             let user = Auth.auth().currentUser!
-            let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
-            userTasksData.observe(.value , with:{snapshot in
-                let datas = snapshot.children.allObjects as [Any]
-                if datas.count > 0 {
-                    AppDelegate.tabBarController.selectedIndex = 0
-                }else{
-                    AppDelegate.tabBarController.selectedIndex = 1
+            Database.database().reference().child(Const.UsersPath + "/" + user.uid).observeSingleEvent(of:.value,with:{snapshot in
+                if snapshot.value == nil {
+                    try! Auth.auth().signOut()
+                } else {
+                    let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
+                    userTasksData.observe(.value , with:{snapshot in
+                        let datas = snapshot.children.allObjects as [Any]
+                        if datas.count > 0 {
+                            AppDelegate.tabBarController.selectedIndex = 0
+                        }else{
+                            AppDelegate.tabBarController.selectedIndex = 1
+                        }
+                    })
                 }
-            } )
+            })
         }
         
         ////  ログインコントローラーのインスタンス

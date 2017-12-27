@@ -12,7 +12,7 @@ import FirebaseDatabase
 import FirebaseAuth
 import PopupDialog
 
-class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDataSource {
+class ProjectTaskController: UIViewController {
     
     @IBOutlet weak var projectTitle: UINavigationItem!
     @IBOutlet weak var addTaskButton: UIBarButtonItem!
@@ -24,6 +24,8 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
 
     @IBOutlet weak var progressLabel: UILabel!
     @IBOutlet weak var sc: UISegmentedControl!
+    @IBOutlet weak var sortButton: UIButton!
+    
 
     var isManager:Bool = false
     var projectId :String!
@@ -37,14 +39,19 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     var sortStyle :Int = 0
     var sortContent:Int = 0
     
-    @IBAction func sortStyle(_ sender: UISwitch) {
-        if sender.isOn {
-            self.sortStyle = 0
-        }else{
+    @IBAction func sortType(_ sender: Any) {
+        if self.sortStyle == 0 {
             self.sortStyle = 1
+            let buttonImage = UIImage(named: "reverse")
+            self.sortButton.setImage(buttonImage, for: UIControlState.normal)
+        } else {
+            self.sortStyle = 0
+            let buttonImage = UIImage(named: "sort")
+            self.sortButton.setImage(buttonImage, for: UIControlState.normal)
         }
         self.superReload()
     }
+    
     
     @IBAction func sortContents(_ sender: Any) {
         self.sortContent = self.sc.selectedSegmentIndex
@@ -66,20 +73,6 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
         let createProjectViewController = self.storyboard?.instantiateViewController(withIdentifier: "ProjectDetail") as! CreateProjectController
         createProjectViewController.projectId = self.projectId!
         self.navigationController?.pushViewController(createProjectViewController, animated: true)
-    }
-    
-    
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //print("DEBUG_PRINT:cell selected")
-        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
-            let addTaskViewController = self.storyboard?.instantiateViewController(withIdentifier: "AddTask") as! AddTaskController
-            addTaskViewController.taskId = self.tasks[indexPath.row].id!
-            addTaskViewController.projectId = self.projectId!
-            addTaskViewController.isManager = self.isManager
-            addTaskViewController.minDate = self.startProjectDate!
-            addTaskViewController.maxDate = self.endProjectDate!
-            self.navigationController?.pushViewController(addTaskViewController, animated: true)
     }
     
     
@@ -106,59 +99,6 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
             
         }
     }
-    
-    
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
-        self.users = Const.users.filter({$0.projects[self.projectId!]! >= 1})
-        switch(self.sortContent){
-            case 0:
-                if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
-                }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
-                }
-            case 1:
-                if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.status! < $1.status! })
-                }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.status! > $1.status! })
-                }
-            case 2:
-                if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.importance! < $1.importance! })
-                }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.importance! > $1.importance! })
-                }
-            default:
-                if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
-                }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
-                }
-        }
-        return self.tasks.count
-    }
-    
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath as IndexPath) as! TableViewCell
-        let theTask = self.tasks[indexPath.row]
-        cell.type = 0
-        cell.setView(task:theTask)
-        
-        return cell
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
-        cell.type = 0
-        cell.setView()
-        let headerView: UIView = cell.contentView
-        return headerView
-    }
-    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -275,6 +215,75 @@ class ProjectTaskController: UIViewController,UITableViewDelegate,UITableViewDat
     }
 }
 
+
+//////////////////////////////////
+
+extension ProjectTaskController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
+        cell.type = 0
+        cell.setView()
+        let headerView: UIView = cell.contentView
+        return headerView
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath as IndexPath, animated: true)
+        let addTaskViewController = self.storyboard?.instantiateViewController(withIdentifier: "AddTask") as! AddTaskController
+        addTaskViewController.taskId = self.tasks[indexPath.row].id!
+        addTaskViewController.projectId = self.projectId!
+        addTaskViewController.isManager = self.isManager
+        addTaskViewController.minDate = self.startProjectDate!
+        addTaskViewController.maxDate = self.endProjectDate!
+        self.navigationController?.pushViewController(addTaskViewController, animated: true)
+    }
+}
+
+extension ProjectTaskController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath as IndexPath) as! TableViewCell
+        let theTask = self.tasks[indexPath.row]
+        cell.type = 0
+        cell.setView(task:theTask)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
+        self.users = Const.users.filter({$0.projects[self.projectId!]! >= 1})
+        switch(self.sortContent){
+        case 0:
+            if self.sortStyle == 0 {
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+            }else{
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+            }
+        case 1:
+            if self.sortStyle == 0 {
+                self.tasks = tasksFilter.sorted(by:{$0.status! < $1.status! })
+            }else{
+                self.tasks = tasksFilter.sorted(by:{$0.status! > $1.status! })
+            }
+        case 2:
+            if self.sortStyle == 0 {
+                self.tasks = tasksFilter.sorted(by:{$0.importance! < $1.importance! })
+            }else{
+                self.tasks = tasksFilter.sorted(by:{$0.importance! > $1.importance! })
+            }
+        default:
+            if self.sortStyle == 0 {
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+            }else{
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+            }
+        }
+        return self.tasks.count
+    }
+}
+
+
+
 //////////////////////////////////
 
 
@@ -304,7 +313,7 @@ extension ProjectTaskController: UICollectionViewDataSource {
         } else {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProgressCell",for: indexPath as IndexPath) as! ProgressCell
         let theTask = self.tasks[indexPath.section]
-        cell.setProgress(theProject,theTask,indexPath.item)
+        cell.setProgress(theProject.startDate!,theTask,indexPath.item)
         let flag1 = theTask.chargers[Const.user.id!] != nil && theTask.chargers[Const.user.id!]! == true
         let flag2 = theTask.status2! != 0 && theTask.status2! != 4 && theTask.status2! != 6 && theTask.status2! != 2
         if self.isManager || (flag1 && flag2){
