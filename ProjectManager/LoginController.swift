@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 import FirebaseAuth
 import FirebaseDatabase
+import OAuthSwift
 
 class LoginController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTF: UITextField!
@@ -17,6 +18,12 @@ class LoginController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var nameTF: UITextField!
     
     var tabBarCotroller : UITabBarController!
+    
+    var oauthswift: OAuthSwift?
+    
+    let consumerData:[String:String] =
+        ["consumerKey":"1061223c7f91f3d40f23",
+         "consumerSecret":"348797adb970d6106a2387608cf0cd1859a15b0b"]
 
 
     @IBAction func handleCreateNewAccount(_ sender: Any) {
@@ -123,6 +130,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
     
     
     @IBAction func handleLogInWithGitHub(_ sender: Any) {
+        self.signInWithGitHub(consumerData)
     }
     
     override func viewDidLoad() {
@@ -146,6 +154,76 @@ class LoginController: UIViewController, UITextFieldDelegate {
         textField.resignFirstResponder()
         //print("DEBUG_PRINT:キーボードしまう")
         return true
+    }
+    
+    func signInWithGitHub(_ serviceParameters: [String:String]){
+        let oauthswift = OAuth2Swift(
+            consumerKey:    serviceParameters["consumerKey"]!,
+            consumerSecret: serviceParameters["consumerSecret"]!,
+            authorizeUrl:   "https://github.com/login/oauth/authorize",
+            accessTokenUrl: "https://github.com/login/oauth/access_token",
+            responseType:   "code"
+        )
+        
+        self.oauthswift = oauthswift
+        oauthswift.authorizeURLHandler = self.getURLHandler()
+        print("DEBUG_PRINT:1")
+        let state = generateState(withLength: 20)
+        print("DEBUG_PRINT:2")
+        let _ = oauthswift.authorize(
+            withCallbackURL: URL(string: "oauth-swift://oauth-callback/github")!,
+            scope: "user,repo",
+            state: state,
+            success: { credential, response, parameters in
+                print("DEBUG_PRINT:3 success")
+                /*
+                Auth.auth().signIn(with: credential) { (user, error) in
+                      if let error = error {
+                            return
+                        }
+                    }
+                */
+                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+            },
+            failure: { error in
+                print("DEBUG_PRINT:3 error")
+                print(error.description)
+            }
+        )
+        print("DEBUG_PRINT:7")
+    }
+    
+    func showTokenAlert(name: String?, credential: OAuthSwiftCredential) {
+        print("DEBUG_PRINT:5")
+        var message = "oauth_token:\(credential.oauthToken)"
+        if !credential.oauthTokenSecret.isEmpty {
+            message += "\n\noauth_token_secret:\(credential.oauthTokenSecret)"
+        }
+        self.showAlertView(title: name ?? "Service", message: message)
+        
+    }
+    
+    func showAlertView(title: String, message: String) {
+        print("DEBUG_PRINT:6")
+        
+        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
+    func getURLHandler() -> OAuthSwiftURLHandlerType {
+        print("DEBUG_PRINT:getURLHandler")
+        if #available(iOS 9.0, *) {
+            let handler = SafariURLHandler(viewController: self, oauthSwift: self.oauthswift!)
+            handler.presentCompletion = {
+                print("Safari presented")
+            }
+            handler.dismissCompletion = {
+                print("Safari dismissed")
+            }
+            return handler
+        }
+        return OAuthSwiftOpenURLExternally.sharedInstance
     }
 
 }

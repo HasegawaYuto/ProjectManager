@@ -184,7 +184,7 @@
                                 <collectionViewLayout key="collectionViewLayout" id="8xL-C9-ThZ" customClass="BidirectionalCollectionLayout" customModule="ProjectManager" customModuleProvider="target"/>
                                 <cells/>
                             </collectionView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="Header" bounces="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6xO-2e-qCR">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" tag="1" contentMode="scaleToFill" restorationIdentifier="Header" bounces="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="6xO-2e-qCR">
                                 <rect key="frame" x="136" y="119" width="239" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>

@@ -74,9 +74,9 @@ class PersonalTaskController: UIViewController {
                 }
             case 2:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.status! < $1.status! })
+                    self.tasks = tasksFilter.sorted(by:{$0.importance! < $1.importance! })
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.status! > $1.status! })
+                    self.tasks = tasksFilter.sorted(by:{$0.importance! > $1.importance! })
                 }
             default:
                 if self.sortStyle == 0 {
