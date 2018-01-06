@@ -37,11 +37,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AppDelegate.tabBarController.setViewControllers(viewControllers, animated: false)
         
-        /*
-        if Auth.auth().currentUser != nil {
-            try! Auth.auth().signOut()
-        }
-        */
+        
+        //logout()
+ 
         
         if Auth.auth().currentUser != nil {
             let user = Auth.auth().currentUser!
@@ -111,6 +109,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             OAuthSwift.handle(url: url)
         }
         return true
+    }
+    
+    func logout(){
+        if Auth.auth().currentUser != nil {
+            try! Auth.auth().signOut()
+        }
     }
     
 }

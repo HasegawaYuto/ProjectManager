@@ -85,6 +85,7 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
     
     
     override func viewWillAppear(_ animated: Bool) {
+        print("DEBUG_PRINT:personal viewWillAppear")
         super.viewWillAppear(animated)
         if let user = Auth.auth().currentUser {
             let userRef = Database.database().reference().child(Const.UsersPath).child(user.uid)

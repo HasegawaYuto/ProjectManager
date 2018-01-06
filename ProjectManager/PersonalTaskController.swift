@@ -138,7 +138,7 @@ class PersonalTaskController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        //print("DEBUG_PRINT:call viewWillAppear personal task")
+        print("DEBUG_PRINT:call viewWillAppear personal task")
         if let user = Auth.auth().currentUser {
             
             let userRef = Database.database().reference().child(Const.UsersPath).child(user.uid)

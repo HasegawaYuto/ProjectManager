@@ -14,7 +14,6 @@ class Users: NSObject {
     var id:String?
     var name:String?
     var mail:String?
-    //var invited:[String:Bool]=[:]
     var projects:[String:Int]=[:] // ex IdBool=["1":true]
     var tasks:[String:Bool]=[:] // ex IdInt = ["1":36]
     
@@ -25,11 +24,6 @@ class Users: NSObject {
         self.name = valueDictionary["name"] as? String
         self.mail = valueDictionary["mail"] as? String
         
-        /*
-        if let inviteds = valueDictionary["invited"] as? [String:Bool]{
-            self.invited = inviteds
-        }
-        */
 
         if let projects = valueDictionary["projects"] as? [String:Int]{
             self.projects = projects

@@ -172,27 +172,43 @@ class LoginController: UIViewController, UITextFieldDelegate {
             scope: "user,repo",
             state: state,
             success: { credential, response, parameters in
-                print("DEBUG_PRINT:credential:\(credential)")
                 let accessToken = credential.oauthToken
                 let credentialGitHub = GitHubAuthProvider.credential(withToken: accessToken)
+                
+                var username : String = "GitHub User"
+                
+                let URLString = "https://api.github.com/user?access_token=" + accessToken
+                let URL = NSURL(string: URLString)!
+                //print("DEBUG_PRINT:URL:\(URL)")
+                let task = URLSession.shared.dataTask(with: URL as URL, completionHandler: {data, response, error in
+                    do {
+                        //print("DEBUG_PRINT:data:\(data!)")
+                        let json = try JSONSerialization.jsonObject(with: data!) as! [String: AnyObject]
+                        if let name = json["login"] as? String {
+                            username = name
+                        }
+                    } catch {
+                        print("DEBUG_PRINT:error json")
+                    }
+                })
+                task.resume()
+                
                 Auth.auth().signIn(with: credentialGitHub) { (user, error) in
                     if let error = error {
                         print("DEBUG_PRINT:sign in error:\(error.localizedDescription)")
                         return
                     } else {
-                        
                         let user = Auth.auth().currentUser!
                         let Ref = Database.database().reference().child(Const.UsersPath).child(user.uid)
                         Ref.observeSingleEvent(of: .value, with:{snapshot in
                             let datas = snapshot.children.allObjects as [Any]
                             if datas.count == 0 {
                                 let postRef = Database.database().reference().child(Const.UsersPath).child(user.uid)
-                                let postData = ["name": "Loing with GitHub User","mail":user.email]
+                                let postData = ["name": username,"mail":user.email]
                                 postRef.setValue(postData)
                             }
+                            self.loadTabBarController()
                         })
-                        
-                        self.loadTabBarController()
                     }
                 }
             },
@@ -200,7 +216,6 @@ class LoginController: UIViewController, UITextFieldDelegate {
                 print(error.description)
             }
         )
-        //print("DEBUG_PRINT:7")
     }
     
     func getURLHandler() -> OAuthSwiftURLHandlerType {
