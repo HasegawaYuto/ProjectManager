@@ -37,6 +37,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AppDelegate.tabBarController.setViewControllers(viewControllers, animated: false)
         
+        /*
+        if Auth.auth().currentUser != nil {
+            try! Auth.auth().signOut()
+        }
+        */
+        
         if Auth.auth().currentUser != nil {
             let user = Auth.auth().currentUser!
             Database.database().reference().child(Const.UsersPath + "/" + user.uid).observeSingleEvent(of:.value,with:{snapshot in
@@ -44,7 +50,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                     try! Auth.auth().signOut()
                 } else {
                     let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
-                    userTasksData.observe(.value , with:{snapshot in
+                    userTasksData.observeSingleEvent(of:.value , with:{snapshot in
                         let datas = snapshot.children.allObjects as [Any]
                         if datas.count > 0 {
                             AppDelegate.tabBarController.selectedIndex = 0
@@ -96,13 +102,38 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
     
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        if (url.host == "oauth-callback") {
+    func application(_ application: UIApplication, open url: URL, sourceApplication: String?, annotation: Any) -> Bool {
+        //print("DEBUG_PRINT:handle url:\(url)")
+        //if (url.host == "projectmanager-b8a6a.firebaseapp.com") {
+        if (url.host == "oauth-swift") {
+            OAuthSwift.handle(url: url)
+        } else {
             OAuthSwift.handle(url: url)
         }
         return true
     }
-
-
+    
 }
+
+/*
+extension AppDelegate {
+    func applicationHandle(url: URL) {
+        print("DEBUG_PRINT:handle0 url:\(url)")
+        if (url.host == "projectmanager-b8a6a.firebaseapp.com") {
+            OAuthSwift.handle(url: url)
+        } else {
+            // Google provider is the only one wuth your.bundle.id url schema.
+            OAuthSwift.handle(url: url)
+        }
+    }
+    
+    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
+        print("DEBUG_PRINT:handle1 url:\(url)")
+        if (url.host == "projectmanager-b8a6a.firebaseapp.com") {
+            OAuth2Swift.handle(url: url)
+        }
+        return true
+    }
+}
+ */
 

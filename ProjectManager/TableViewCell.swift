@@ -38,7 +38,7 @@ class TableViewCell: UITableViewCell {
     }
     
     func setView(task:Tasks! = nil){
-        print("DEBUG_PRINT:call setView")
+        //print("DEBUG_PRINT:call setView")
         if task != nil {
             self.users = Const.users.filter({$0.projects[task.project!]! >= 1})
             self.task = task.label!

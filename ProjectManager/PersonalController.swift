@@ -39,31 +39,22 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
             Database.database().reference().child(Const.UsersPath).child(Const.user.id!).removeAllObservers()
             self.observeUserBool = false
         }
-        print("DEBUG_PRINT:call phase1")
         if self.observeProjectBool {
             Database.database().reference().child(Const.ProjectsPath).removeAllObservers()
             Database.database().reference().child(Const.TasksPath).removeAllObservers()
             self.observeProjectBool = false
         }
         try! Auth.auth().signOut()
-        print("DEBUG_PRINT:call phase2")
         self.selectProjects = []
         Const.projects = []
-        print("DEBUG_PRINT:call phase3")
         Const.tasks = []
-        print("DEBUG_PRINT:call phase4")
         Const.users = []
-        print("DEBUG_PRINT:call phase5")
         self.sc.selectedSegmentIndex = 0
-        print("DEBUG_PRINT:call phase7")
         self.tableV.reloadData()
-        print("DEBUG_PRINT:call phase8")
         
         // ログイン画面を表示する
         let loginViewController = self.storyboard?.instantiateViewController(withIdentifier: "Login")
-        print("DEBUG_PRINT:call phase9")
         Const.user = nil
-        print("DEBUG_PRINT:call phase6")
         self.present(loginViewController!, animated: true, completion: nil)
     }
     

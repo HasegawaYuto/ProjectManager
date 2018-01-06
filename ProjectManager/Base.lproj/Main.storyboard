@@ -816,10 +816,10 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tec-KL-R6r">
                                 <rect key="frame" x="26" y="475" width="323" height="36"/>
-                                <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="tintColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="Sign in with GitHub(not working)"/>
+                                <state key="normal" title="Sign in with GitHub"/>
                                 <connections>
                                     <action selector="handleLogInWithGitHub:" destination="3Sz-Pw-fb5" eventType="touchUpInside" id="8Ns-A7-epU"/>
                                 </connections>

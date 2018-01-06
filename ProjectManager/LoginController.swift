@@ -11,6 +11,7 @@ import Firebase
 import FirebaseAuth
 import FirebaseDatabase
 import OAuthSwift
+import SafariServices
 
 class LoginController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var emailTF: UITextField!
@@ -56,13 +57,9 @@ class LoginController: UIViewController, UITextFieldDelegate {
                         print("DEBUG_PRINT: [displayName = \(String(describing: user.displayName))]の設定に成功しました。")
                         
                         //usersデータベースに保存
-                        print("DEBUG_PRINT:will save users")
                         let postRef = Database.database().reference().child(Const.UsersPath).child(user.uid)
-                        print("DEBUG_PRINT:set users ref")
                         let postData = ["name": user.displayName,"mail":user.email]
-                        print("DEBUG_PRINT:set users data")
                         postRef.setValue(postData)
-                        print("DEBUG_PRINT:usersに情報を保存")
                         
                         // 画面を閉じてViewControllerに戻る
                         //self.dismiss(animated: true, completion: nil)
@@ -100,22 +97,22 @@ class LoginController: UIViewController, UITextFieldDelegate {
     }
     
     func loadTabBarController(){
-        print("DEBUG_PRINT:call loadTabBarController")
+        //print("DEBUG_PRINT:call loadTabBarController")
         //self.tabBarCotroller = AppDelegate.tabBarController
-        print("DEBUG_PRINT:set tabBarCotroller")
+        //print("DEBUG_PRINT:set tabBarCotroller")
         if Auth.auth().currentUser != nil {
-            print("DEBUG_PRINT:login yes")
+            //print("DEBUG_PRINT:login yes")
             let user = Auth.auth().currentUser!
             let userTasksData = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"chargers/" + user.uid).queryStarting(atValue:true)
             userTasksData.observeSingleEvent(of: .value , with:{snapshot in
-                print("DEBUG_PRINT:ch task exists")
+                //print("DEBUG_PRINT:ch task exists")
                 let datas = snapshot.children.allObjects as [Any]
                 if datas.count > 0 {
                     AppDelegate.tabBarController.selectedIndex = 0
-                    print("DEBUG_PRINT:task exists")
+                    //print("DEBUG_PRINT:task exists")
                 }else{
                     AppDelegate.tabBarController.selectedIndex = 1
-                    print("DEBUG_PRINT:task  not exists")
+                    //print("DEBUG_PRINT:task  not exists")
                 }
                 self.view.window?.rootViewController = AppDelegate.tabBarController
                 self.dismiss(animated: true, completion: nil)
@@ -125,12 +122,12 @@ class LoginController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("DEBUG_PRINT:viewWillAppear")
+        //print("DEBUG_PRINT:viewWillAppear")
     }
     
     
     @IBAction func handleLogInWithGitHub(_ sender: Any) {
-        self.signInWithGitHub(consumerData)
+        self.doOAuthGithub(self.consumerData)
     }
     
     override func viewDidLoad() {
@@ -156,7 +153,7 @@ class LoginController: UIViewController, UITextFieldDelegate {
         return true
     }
     
-    func signInWithGitHub(_ serviceParameters: [String:String]){
+    func doOAuthGithub(_ serviceParameters: [String:String]){
         let oauthswift = OAuth2Swift(
             consumerKey:    serviceParameters["consumerKey"]!,
             consumerSecret: serviceParameters["consumerSecret"]!,
@@ -167,59 +164,63 @@ class LoginController: UIViewController, UITextFieldDelegate {
         
         self.oauthswift = oauthswift
         oauthswift.authorizeURLHandler = self.getURLHandler()
-        print("DEBUG_PRINT:1")
+        //print("DEBUG_PRINT:1")
         let state = generateState(withLength: 20)
-        print("DEBUG_PRINT:2")
+        //print("DEBUG_PRINT:2")
         let _ = oauthswift.authorize(
             withCallbackURL: URL(string: "oauth-swift://oauth-callback/github")!,
             scope: "user,repo",
             state: state,
             success: { credential, response, parameters in
-                print("DEBUG_PRINT:3 success")
-                /*
-                Auth.auth().signIn(with: credential) { (user, error) in
-                      if let error = error {
-                            return
-                        }
+                print("DEBUG_PRINT:credential:\(credential)")
+                let accessToken = credential.oauthToken
+                let credentialGitHub = GitHubAuthProvider.credential(withToken: accessToken)
+                Auth.auth().signIn(with: credentialGitHub) { (user, error) in
+                    if let error = error {
+                        print("DEBUG_PRINT:sign in error:\(error.localizedDescription)")
+                        return
+                    } else {
+                        
+                        let user = Auth.auth().currentUser!
+                        let Ref = Database.database().reference().child(Const.UsersPath).child(user.uid)
+                        Ref.observeSingleEvent(of: .value, with:{snapshot in
+                            let datas = snapshot.children.allObjects as [Any]
+                            if datas.count == 0 {
+                                let postRef = Database.database().reference().child(Const.UsersPath).child(user.uid)
+                                let postData = ["name": "Loing with GitHub User","mail":user.email]
+                                postRef.setValue(postData)
+                            }
+                        })
+                        
+                        self.loadTabBarController()
                     }
-                */
-                self.showTokenAlert(name: serviceParameters["name"], credential: credential)
+                }
             },
             failure: { error in
-                print("DEBUG_PRINT:3 error")
                 print(error.description)
             }
         )
-        print("DEBUG_PRINT:7")
-    }
-    
-    func showTokenAlert(name: String?, credential: OAuthSwiftCredential) {
-        print("DEBUG_PRINT:5")
-        var message = "oauth_token:\(credential.oauthToken)"
-        if !credential.oauthTokenSecret.isEmpty {
-            message += "\n\noauth_token_secret:\(credential.oauthTokenSecret)"
-        }
-        self.showAlertView(title: name ?? "Service", message: message)
-        
-    }
-    
-    func showAlertView(title: String, message: String) {
-        print("DEBUG_PRINT:6")
-        
-        let alert = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
-        alert.addAction(UIAlertAction(title: "Close", style: UIAlertActionStyle.default, handler: nil))
-        self.present(alert, animated: true, completion: nil)
+        //print("DEBUG_PRINT:7")
     }
     
     func getURLHandler() -> OAuthSwiftURLHandlerType {
-        print("DEBUG_PRINT:getURLHandler")
+        //print("DEBUG_PRINT:getURLHandler")
         if #available(iOS 9.0, *) {
             let handler = SafariURLHandler(viewController: self, oauthSwift: self.oauthswift!)
+            //print("DEBUG_PRINT:set handler")
             handler.presentCompletion = {
-                print("Safari presented")
+                //print("Safari presented")
             }
             handler.dismissCompletion = {
-                print("Safari dismissed")
+                //print("Safari dismissed")
+            }
+            handler.factory = { url in
+                let controller = SFSafariViewController(url: url)
+                // Customize it, for instance
+                if #available(iOS 10.0, *) {
+                    //  controller.preferredBarTintColor = UIColor.red
+                }
+                return controller
             }
             return handler
         }
@@ -227,3 +228,27 @@ class LoginController: UIViewController, UITextFieldDelegate {
     }
 
 }
+
+/*
+extension LoginController: OAuthWebViewControllerDelegate {
+    func oauthWebViewControllerDidPresent() {
+        
+    }
+    func oauthWebViewControllerDidDismiss() {
+        
+    }
+    
+    func oauthWebViewControllerWillAppear() {
+        
+    }
+    func oauthWebViewControllerDidAppear() {
+        
+    }
+    func oauthWebViewControllerWillDisappear() {
+        
+    }
+    func oauthWebViewControllerDidDisappear() {
+        oauthswift?.cancel()
+    }
+}
+*/
