@@ -958,7 +958,9 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Chart" image="list-simple-7" selectedImage="list-simple-7" id="viY-Bz-Yq6"/>
-                    <navigationItem key="navigationItem" title="Tasks" id="NdR-Yh-ZYt"/>
+                    <navigationItem key="navigationItem" title="Tasks" id="NdR-Yh-ZYt">
+                        <barButtonItem key="rightBarButtonItem" title="Item" id="4cc-X6-TVp"/>
+                    </navigationItem>
                     <connections>
                         <outlet property="dateT" destination="Ivn-9i-LUa" id="UB6-9g-Hoy"/>
                         <outlet property="progressT" destination="4kv-hA-G2j" id="YaD-fU-uGy"/>
@@ -995,7 +997,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="P6W-B6-OHX" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Personal" image="man-7" selectedImage="man-7" id="oQN-4N-yvH"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jl4-y8-Kf4">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Jl4-y8-Kf4">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
