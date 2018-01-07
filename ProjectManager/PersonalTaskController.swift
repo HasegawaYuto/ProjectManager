@@ -16,6 +16,7 @@ class PersonalTaskController: UIViewController {
     @IBOutlet weak var taskT: UITableView!
     @IBOutlet weak var dateT: UICollectionView!
     @IBOutlet weak var progressT: UICollectionView!
+    //@IBOutlet weak var notificationButton: UIBarButtonItem!
     
     @IBOutlet weak var sortButton: UIButton!
     @IBOutlet weak var sc: UISegmentedControl!
@@ -51,6 +52,12 @@ class PersonalTaskController: UIViewController {
         self.superReload()
     }
     
+    /*
+    @IBAction func handleNotificationButton(_ sender: Any) {
+        let notificationViewController = self.storyboard?.instantiateViewController(withIdentifier: "Notification") as! NotificationController
+        self.navigationController?.pushViewController(notificationViewController, animated: true)
+    }
+    */
     
     func superReload(){
         let tasksFilter = Const.tasks.filter({$0.chargers[Const.user.id!] != nil })
@@ -114,6 +121,7 @@ class PersonalTaskController: UIViewController {
         
         let nib3 = UINib(nibName: "ProgressCell", bundle: nil)
         self.progressT.register(nib3,forCellWithReuseIdentifier: "ProgressCell")
+        
 
     }
 

@@ -40,6 +40,7 @@
 		79E541FE1FD8F8D1000C3A35 /* Tasks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E541FD1FD8F8D1000C3A35 /* Tasks.swift */; };
 		79E542021FD922F8000C3A35 /* Projects.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E542011FD922F8000C3A35 /* Projects.swift */; };
 		79E542041FDA6E34000C3A35 /* PersonalTaskController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */; };
+		79E7571020025830000D338E /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79E7570F20025830000D338E /* NotificationController.swift */; };
 		7CFD3E491669D728562BA878 /* Pods_ProjectManager.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A0541DC9156187171A1256D0 /* Pods_ProjectManager.framework */; };
 /* End PBXBuildFile section */
 
@@ -81,6 +82,7 @@
 		79E541FD1FD8F8D1000C3A35 /* Tasks.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tasks.swift; sourceTree = "<group>"; };
 		79E542011FD922F8000C3A35 /* Projects.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Projects.swift; sourceTree = "<group>"; };
 		79E542031FDA6E34000C3A35 /* PersonalTaskController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PersonalTaskController.swift; sourceTree = "<group>"; };
+		79E7570F20025830000D338E /* NotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
 		A0541DC9156187171A1256D0 /* Pods_ProjectManager.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ProjectManager.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -122,6 +124,7 @@
 				79C7F96A1FD517DD00FD8A9B /* AppDelegate.swift */,
 				79C7F96C1FD517DD00FD8A9B /* ViewController.swift */,
 				79C7F96E1FD517DD00FD8A9B /* Main.storyboard */,
+				79E7570F20025830000D338E /* NotificationController.swift */,
 				79DA86C81FEB5AD80014EAC4 /* BidirectionalCollectionLayout.swift */,
 				7954FD3E1FE3E67D00ACFE0E /* TableViewCell.swift */,
 				7954FD3F1FE3E67D00ACFE0E /* TableViewCell.xib */,
@@ -321,6 +324,7 @@
 				79E542041FDA6E34000C3A35 /* PersonalTaskController.swift in Sources */,
 				79DA86C91FEB5AD80014EAC4 /* BidirectionalCollectionLayout.swift in Sources */,
 				79ADBA4A1FD53F120078DC23 /* LoginController.swift in Sources */,
+				79E7571020025830000D338E /* NotificationController.swift in Sources */,
 				79ADBA501FD580F10078DC23 /* PersonalController.swift in Sources */,
 				795AEB4D1FE2602700F67981 /* IdValue.swift in Sources */,
 				79C7F96B1FD517DD00FD8A9B /* AppDelegate.swift in Sources */,

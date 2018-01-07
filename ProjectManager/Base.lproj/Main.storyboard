@@ -958,9 +958,7 @@
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Chart" image="list-simple-7" selectedImage="list-simple-7" id="viY-Bz-Yq6"/>
-                    <navigationItem key="navigationItem" title="Tasks" id="NdR-Yh-ZYt">
-                        <barButtonItem key="rightBarButtonItem" title="Item" id="4cc-X6-TVp"/>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" title="Tasks" id="NdR-Yh-ZYt"/>
                     <connections>
                         <outlet property="dateT" destination="Ivn-9i-LUa" id="UB6-9g-Hoy"/>
                         <outlet property="progressT" destination="4kv-hA-G2j" id="YaD-fU-uGy"/>
@@ -972,6 +970,25 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="iQ4-NI-Vp3" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1887" y="-66"/>
+        </scene>
+        <!--Notification-->
+        <scene sceneID="EYw-dF-CXN">
+            <objects>
+                <viewController storyboardIdentifier="Notification" id="Zvi-bU-kVf" customClass="NotificationController" customModule="ProjectManager" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="1Ny-Rp-NUe"/>
+                        <viewControllerLayoutGuide type="bottom" id="mn5-QH-GDo"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="adr-af-qBq">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Notification" id="ujc-hL-E0f"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="cK5-fZ-a89" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2855" y="-66"/>
         </scene>
         <!--Bottom Tab Controller-->
         <scene sceneID="C88-xf-BRo">
