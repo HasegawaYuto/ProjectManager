@@ -30,10 +30,10 @@ class Projects: NSObject {
         self.detail = valueDictionary["detail"] as? String
         
         let sDate = valueDictionary["startDate"] as? String
-        self.startDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(sDate!)!)
+        self.startDate = NSDate(timeIntervalSince1970: TimeInterval(sDate!)!)
         
         let eDate = valueDictionary["endDate"] as? String
-        self.endDate = NSDate(timeIntervalSinceReferenceDate: TimeInterval(eDate!)!)
+        self.endDate = NSDate(timeIntervalSince1970: TimeInterval(eDate!)!)
         
         if let members = valueDictionary["members"] as? [String:Int] {
             self.members = members

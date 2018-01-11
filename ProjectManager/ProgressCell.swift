@@ -36,21 +36,21 @@ class ProgressCell: UICollectionViewCell {
         let theDay = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: planStart as Date)! as NSDate
         let theDayStart = Const.getLatestMidnight(theDay)
         let theDayEnd = Const.getNextMidnight(theDay)
-        let oneDayTerm = theDayEnd.timeIntervalSinceReferenceDate - theDayStart.timeIntervalSinceReferenceDate
+        let oneDayTerm = theDayEnd.timeIntervalSince1970 - theDayStart.timeIntervalSince1970
         
         
-        let taskPlanStart = task.startDate!.timeIntervalSinceReferenceDate
-        let taskPlanEnd = task.endDate!.timeIntervalSinceReferenceDate
+        let taskPlanStart = task.startDate!.timeIntervalSince1970
+        let taskPlanEnd = task.endDate!.timeIntervalSince1970
         
-        let flag2 = theDayEnd.timeIntervalSinceReferenceDate <= taskPlanStart
-        let flag1 = theDayStart.timeIntervalSinceReferenceDate >= taskPlanEnd
+        let flag2 = theDayEnd.timeIntervalSince1970 <= taskPlanStart
+        let flag1 = theDayStart.timeIntervalSince1970 >= taskPlanEnd
         
         if flag1 || flag2 {
             self.planProgress.isHidden = true
         }else{
             self.planProgress.isHidden = false
             if self.isInDate(task.startDate!,theDayStart,theDayEnd)  {
-                let taskStartFromTheMidnight = taskPlanStart - theDayStart.timeIntervalSinceReferenceDate
+                let taskStartFromTheMidnight = taskPlanStart - theDayStart.timeIntervalSince1970
                 let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
                 self.leftSideP.constant = CGFloat(cellLeftMargin)
             } else {
@@ -58,7 +58,7 @@ class ProgressCell: UICollectionViewCell {
             }
             
             if self.isInDate(task.endDate!,theDayStart,theDayEnd)   {
-                let taskEndFromTheMidnight = theDayEnd.timeIntervalSinceReferenceDate - taskPlanEnd
+                let taskEndFromTheMidnight = theDayEnd.timeIntervalSince1970 - taskPlanEnd
                 let cellRightMargin = ( taskEndFromTheMidnight / oneDayTerm ) * 49
                 self.rightSideP.constant = CGFloat(cellRightMargin)
             } else {
@@ -66,26 +66,26 @@ class ProgressCell: UICollectionViewCell {
             }
         }
         
-        if task.realStartDate != nil && task.realStartDate!.timeIntervalSinceReferenceDate <= theDayEnd.timeIntervalSinceReferenceDate {
+        if task.realStartDate != nil && task.realStartDate!.timeIntervalSince1970 <= theDayEnd.timeIntervalSince1970 {
             var realEndDate:NSDate!
             if task.realEndDate != nil {
                 realEndDate = task.realEndDate!
             }else{
                 realEndDate = NSDate()
             }
-            let taskRealStart = task.realStartDate!.timeIntervalSinceReferenceDate
-            let taskRealEnd = realEndDate.timeIntervalSinceReferenceDate
+            let taskRealStart = task.realStartDate!.timeIntervalSince1970
+            let taskRealEnd = realEndDate.timeIntervalSince1970
             
             if self.isInDate(task.realStartDate!,theDayStart,theDayEnd) {
                 self.actuallyProgress.isHidden = false
-                let taskStartFromTheMidnight = taskRealStart - theDayStart.timeIntervalSinceReferenceDate
+                let taskStartFromTheMidnight = taskRealStart - theDayStart.timeIntervalSince1970
                 let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
                 self.leftSideA.constant = CGFloat(cellLeftMargin)
             }
-            if realEndDate.timeIntervalSinceReferenceDate >= theDayStart.timeIntervalSinceReferenceDate {
+            if realEndDate.timeIntervalSince1970 >= theDayStart.timeIntervalSince1970 {
                 self.actuallyProgress.isHidden = false
                 if self.isInDate(realEndDate,theDayStart,theDayEnd) {
-                    let taskEndFromTheMidnight = theDayEnd.timeIntervalSinceReferenceDate - taskRealEnd
+                    let taskEndFromTheMidnight = theDayEnd.timeIntervalSince1970 - taskRealEnd
                     let cellRightMargin = ( taskEndFromTheMidnight / oneDayTerm ) * 49
                     self.rightSideA.constant = CGFloat(cellRightMargin)
                 }
@@ -99,9 +99,9 @@ class ProgressCell: UICollectionViewCell {
     }
     
     func isInDate( _ theDate:NSDate, _ theDayStart:NSDate , _ theDayEnd : NSDate)->Bool{
-            let theDateI = theDate.timeIntervalSinceReferenceDate
-            let theDayStartI = theDayStart.timeIntervalSinceReferenceDate
-            let theDayEndI = theDayEnd.timeIntervalSinceReferenceDate
+            let theDateI = theDate.timeIntervalSince1970
+            let theDayStartI = theDayStart.timeIntervalSince1970
+            let theDayEndI = theDayEnd.timeIntervalSince1970
         
         if theDateI >= theDayStartI && theDateI <= theDayEndI {
             return true

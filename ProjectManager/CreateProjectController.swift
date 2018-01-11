@@ -85,11 +85,11 @@ class CreateProjectController: UIViewController {
                 self.oldDetail = oldproject.detail!
                 
                 self.startDateP.date = oldproject.startDate! as Date
-                let sDate = oldproject.startDate?.timeIntervalSinceReferenceDate
+                let sDate = oldproject.startDate?.timeIntervalSince1970
                 self.oldStartDate = String(sDate!)
                 
                 self.endDateP.date = oldproject.endDate! as Date
-                let eDate = oldproject.endDate?.timeIntervalSinceReferenceDate
+                let eDate = oldproject.endDate?.timeIntervalSince1970
                 self.oldStartDate = String(eDate!)
                 
                 if oldproject.members.count > 0{
@@ -131,8 +131,8 @@ class CreateProjectController: UIViewController {
         print("DEBUG_PRINT:call saveProject")
         let IsTitleChanged = self.oldTitle != self.titleTF.text!
         let IsDetailChanged = self.oldDetail != self.detailTV.text!
-        let IsStartDateChanged = self.oldStartDate != String(self.startDateP.date.timeIntervalSinceReferenceDate)
-        let IsEndDateChanged = self.oldEndDate != String(self.endDateP.date.timeIntervalSinceReferenceDate)
+        let IsStartDateChanged = self.oldStartDate != String(self.startDateP.date.timeIntervalSince1970)
+        let IsEndDateChanged = self.oldEndDate != String(self.endDateP.date.timeIntervalSince1970)
         let isChanged = IsTitleChanged || IsDetailChanged || IsStartDateChanged || IsEndDateChanged
         
         if isChanged && self.isManager{
@@ -154,8 +154,8 @@ class CreateProjectController: UIViewController {
                 self.observe = true
             }
             
-            let sDate = self.startDateP.date.timeIntervalSinceReferenceDate
-            let eDate = self.endDateP.date.timeIntervalSinceReferenceDate
+            let sDate = self.startDateP.date.timeIntervalSince1970
+            let eDate = self.endDateP.date.timeIntervalSince1970
             let postRef = Database.database().reference().child(Const.ProjectsPath)
             
             if self.mode == 0 {
@@ -183,8 +183,8 @@ class CreateProjectController: UIViewController {
             
             self.oldTitle = self.titleTF.text!
             self.oldDetail = self.detailTV.text!
-            self.oldStartDate = String(self.startDateP.date.timeIntervalSinceReferenceDate)
-            self.oldEndDate = String(self.endDateP.date.timeIntervalSinceReferenceDate)
+            self.oldStartDate = String(self.startDateP.date.timeIntervalSince1970)
+            self.oldEndDate = String(self.endDateP.date.timeIntervalSince1970)
         }
     }
 }

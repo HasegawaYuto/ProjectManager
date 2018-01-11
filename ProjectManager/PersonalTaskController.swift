@@ -69,9 +69,9 @@ class PersonalTaskController: UIViewController {
             switch(self.sortContent){
             case 0:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
                 }
             case 1:
                 if self.sortStyle == 0 {
@@ -87,9 +87,9 @@ class PersonalTaskController: UIViewController {
                 }
             default:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
                 }
             }
             self.taskT.reloadData()
@@ -281,8 +281,8 @@ extension PersonalTaskController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if self.tasks.count > 0{
-        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate })[0]
-        let maxTask = self.tasks.sorted(by:{$0.endDate!.timeIntervalSinceReferenceDate > $1.endDate!.timeIntervalSinceReferenceDate })[0]
+        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970 })[0]
+        let maxTask = self.tasks.sorted(by:{$0.endDate!.timeIntervalSince1970 > $1.endDate!.timeIntervalSince1970 })[0]
         return Const.getTermOfTwoDate(minTask.startDate!,maxTask.endDate!)
         } else {
             return 0
@@ -298,7 +298,7 @@ extension PersonalTaskController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate })[0]
+        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970 })[0]
         if collectionView.restorationIdentifier == "dateT" {
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateLabel",for: indexPath as IndexPath) as! DateLabel

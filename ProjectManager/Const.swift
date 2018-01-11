@@ -41,8 +41,8 @@ struct Const {
         var term = 0
         var Date0 = Date1
         
-        while date2.timeIntervalSinceReferenceDate
-            > Date0.timeIntervalSinceReferenceDate
+        while date2.timeIntervalSince1970
+            > Date0.timeIntervalSince1970
  {
     term += 1
             Date0 = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: Date1 as Date)! as NSDate

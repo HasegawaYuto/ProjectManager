@@ -56,8 +56,8 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
             let taskLabelBool = theTask.label != self.taskL.text
             let taskDetailBool = theTask.detail != self.detailT.text
             let importanceBool = theTask.importance != self.importanceV.rating
-            let startDateBool = String(theTask.startDate!.timeIntervalSinceReferenceDate) != String(self.startDateP.date.timeIntervalSinceReferenceDate)
-            let endDateBool = String(theTask.endDate!.timeIntervalSinceReferenceDate) != String(self.endDateP.date.timeIntervalSinceReferenceDate)
+            let startDateBool = String(theTask.startDate!.timeIntervalSince1970) != String(self.startDateP.date.timeIntervalSince1970)
+            let endDateBool = String(theTask.endDate!.timeIntervalSince1970) != String(self.endDateP.date.timeIntervalSince1970)
             
             flag = taskLabelBool || taskDetailBool || importanceBool || startDateBool || endDateBool
         }else{
@@ -91,8 +91,8 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
                                 "project":self.projectId!,
                                 "status":0.0,
                                 "status2":0,
-                                "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                                "endDate":String(self.endDateP.date.timeIntervalSinceReferenceDate),
+                                "startDate":String(self.startDateP.date.timeIntervalSince1970),
+                                "endDate":String(self.endDateP.date.timeIntervalSince1970),
                                 "importance":self.importanceV.rating] as [String : Any]
                 projectRef.setValue(0.0)
                 taskRef.setValue(saveData)
@@ -101,8 +101,8 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
                 print("DEBUG_PRINT:mode update")
                 let saveData = ["label":self.taskL.text!,
                                 "detail":self.detailT.text!,
-                                "startDate":String(self.startDateP.date.timeIntervalSinceReferenceDate),
-                                "endDate":String(self.endDateP.date.timeIntervalSinceReferenceDate),
+                                "startDate":String(self.startDateP.date.timeIntervalSince1970),
+                                "endDate":String(self.endDateP.date.timeIntervalSince1970),
                                 "importance":self.importanceV.rating] as [String : Any]
                 taskRef.updateChildValues(saveData)
             }

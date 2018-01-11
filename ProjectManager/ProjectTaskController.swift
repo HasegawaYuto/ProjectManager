@@ -265,9 +265,9 @@ extension ProjectTaskController: UITableViewDataSource {
         switch(self.sortContent){
         case 0:
             if self.sortStyle == 0 {
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
             }else{
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
             }
         case 1:
             if self.sortStyle == 0 {
@@ -283,9 +283,9 @@ extension ProjectTaskController: UITableViewDataSource {
             }
         default:
             if self.sortStyle == 0 {
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate < $1.startDate!.timeIntervalSinceReferenceDate})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
             }else{
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSinceReferenceDate > $1.startDate!.timeIntervalSinceReferenceDate})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
             }
         }
         return self.tasks.count
