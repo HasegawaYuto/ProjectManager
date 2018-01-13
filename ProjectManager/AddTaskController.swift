@@ -27,8 +27,8 @@ class AddTaskController: UIViewController, UITextFieldDelegate {
     var observe :Bool = false
     var taskId : String!
     var isManager:Bool = false
-    var minDate :NSDate!
-    var maxDate:NSDate!
+    var minDate :Date!
+    var maxDate:Date!
     var importance:Double!
     var status:Double = 0
 

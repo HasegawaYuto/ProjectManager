@@ -16,10 +16,10 @@ class Tasks: NSObject {
     //var category:String?
     var label:String?
     var detail:String?
-    var startDate:NSDate?
-    var endDate:NSDate?
-    var realStartDate:NSDate?
-    var realEndDate:NSDate?
+    var startDate:Date?
+    var endDate:Date?
+    var realStartDate:Date?
+    var realEndDate:Date?
     var importance:Double?
     var status:Double?
     var status2:Int?
@@ -32,10 +32,12 @@ class Tasks: NSObject {
         self.project = valueDictionary["project"] as? String
         
         let sDate = valueDictionary["startDate"] as? String
-        self.startDate = NSDate(timeIntervalSince1970: TimeInterval(sDate!)!)
+        let sDateD : Double = Double(sDate!)!
+        self.startDate = Date(timeIntervalSince1970: TimeInterval(sDateD))
         
         let eDate = valueDictionary["endDate"] as? String
-        self.endDate = NSDate(timeIntervalSince1970: TimeInterval(eDate!)!)
+        let eDateD : Double = Double(eDate!)!
+        self.endDate = Date(timeIntervalSince1970: TimeInterval(eDateD))
 
         self.label = valueDictionary["label"] as? String
         self.detail = valueDictionary["detail"] as? String
@@ -48,10 +50,12 @@ class Tasks: NSObject {
         }
         
         if let rsDate = valueDictionary["realStartDate"] as? String {
-            self.realStartDate = NSDate(timeIntervalSince1970: TimeInterval(rsDate)!)
+            let rsDateD : Double = Double(rsDate)!
+            self.realStartDate = Date(timeIntervalSince1970: TimeInterval(rsDateD))
         }
         if let reDate = valueDictionary["realEndDate"] as? String {
-            self.realEndDate = NSDate(timeIntervalSince1970: TimeInterval(reDate)!)
+            let reDateD : Double = Double(reDate)!
+            self.realEndDate = Date(timeIntervalSince1970: TimeInterval(reDateD))
         }
         
     }

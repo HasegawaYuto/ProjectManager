@@ -28,85 +28,76 @@ class ProgressCell: UICollectionViewCell {
         // Initialization code
     }
     
-    func setProgress(_ planStart:NSDate!, _ task:Tasks , _ term : Int){
-        //print("DEBUG_PRINT:call setProgress:\(term)")
-        
-        let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
-        //let projectStart = project.startDate!
-        let theDay = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: planStart as Date)! as NSDate
+    func setProgress(_ planStart:Date!, _ task:Tasks , _ term : Int){
+        let theDay = Const.calendar.date(byAdding: .day, value: term, to: planStart)!
         let theDayStart = Const.getLatestMidnight(theDay)
         let theDayEnd = Const.getNextMidnight(theDay)
-        let oneDayTerm = theDayEnd.timeIntervalSince1970 - theDayStart.timeIntervalSince1970
+        let oneDayTermInt = Const.calendar.dateComponents([.second],from:theDayStart,to:theDayEnd).second!
+        let oneDayTerm:Double = Double(oneDayTermInt)
         
+        let flag2 = theDayEnd < task.startDate!
+        let flag1 = theDayStart > task.endDate!
+        let flag3 = task.startDate! == task.endDate!
         
-        let taskPlanStart = task.startDate!.timeIntervalSince1970
-        let taskPlanEnd = task.endDate!.timeIntervalSince1970
-        
-        let flag2 = theDayEnd.timeIntervalSince1970 <= taskPlanStart
-        let flag1 = theDayStart.timeIntervalSince1970 >= taskPlanEnd
-        
-        if flag1 || flag2 {
+        if flag1 || flag2 || flag3 {
             self.planProgress.isHidden = true
         }else{
             self.planProgress.isHidden = false
-            if self.isInDate(task.startDate!,theDayStart,theDayEnd)  {
-                let taskStartFromTheMidnight = taskPlanStart - theDayStart.timeIntervalSince1970
-                let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
+            self.leftSideP.constant = 0
+            self.rightSideP.constant = 0
+            if Const.calendar.isDate(task.startDate!,inSameDayAs:theDayStart){
+                let taskStartFromTheMidnightInt = Const.calendar.dateComponents([.second],from:theDayStart,to:task.startDate!).second!
+                let taskStartFromTheMidnight : Double = Double(taskStartFromTheMidnightInt)
+                let cellLeftMargin:Double = Double( taskStartFromTheMidnight / oneDayTerm ) * 49
                 self.leftSideP.constant = CGFloat(cellLeftMargin)
-            } else {
-                self.leftSideP.constant = 0
             }
             
-            if self.isInDate(task.endDate!,theDayStart,theDayEnd)   {
-                let taskEndFromTheMidnight = theDayEnd.timeIntervalSince1970 - taskPlanEnd
+            if Const.calendar.isDate(task.endDate!,inSameDayAs:theDayStart){
+                let taskEndFromTheMidnightInt = Const.calendar.dateComponents([.second],from:task.endDate!,to:theDayEnd).second!
+                let taskEndFromTheMidnight : Double = Double(taskEndFromTheMidnightInt)
                 let cellRightMargin = ( taskEndFromTheMidnight / oneDayTerm ) * 49
                 self.rightSideP.constant = CGFloat(cellRightMargin)
-            } else {
-                self.rightSideP.constant = 0
             }
         }
         
-        if task.realStartDate != nil && task.realStartDate!.timeIntervalSince1970 <= theDayEnd.timeIntervalSince1970 {
-            var realEndDate:NSDate!
-            if task.realEndDate != nil {
-                realEndDate = task.realEndDate!
-            }else{
-                realEndDate = NSDate()
-            }
-            let taskRealStart = task.realStartDate!.timeIntervalSince1970
-            let taskRealEnd = realEndDate.timeIntervalSince1970
+        if task.realStartDate != nil {
+            let blueFlag1 = task.realStartDate! < theDayStart
+            let blueFlag2 = Const.calendar.isDate(task.realStartDate!,inSameDayAs:theDayStart)
             
-            if self.isInDate(task.realStartDate!,theDayStart,theDayEnd) {
+            if blueFlag1 || blueFlag2 {
                 self.actuallyProgress.isHidden = false
-                let taskStartFromTheMidnight = taskRealStart - theDayStart.timeIntervalSince1970
-                let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
-                self.leftSideA.constant = CGFloat(cellLeftMargin)
-            }
-            if realEndDate.timeIntervalSince1970 >= theDayStart.timeIntervalSince1970 {
-                self.actuallyProgress.isHidden = false
-                if self.isInDate(realEndDate,theDayStart,theDayEnd) {
-                    let taskEndFromTheMidnight = theDayEnd.timeIntervalSince1970 - taskRealEnd
-                    let cellRightMargin = ( taskEndFromTheMidnight / oneDayTerm ) * 49
-                    self.rightSideA.constant = CGFloat(cellRightMargin)
+                self.leftSideA.constant = 0
+                self.rightSideA.constant = 0
+                
+                var realEndDate:Date!
+                if task.realEndDate != nil {
+                    realEndDate = task.realEndDate!
+                }else{
+                    realEndDate = Date()
                 }
-            }else{
+            
+                if Const.calendar.isDate(task.realStartDate!,inSameDayAs:theDayStart) {
+                    let taskStartFromTheMidnightInt = Const.calendar.dateComponents([.second],from:theDayStart,to:task.realStartDate!).second!
+                    let taskStartFromTheMidnight : Double = Double(taskStartFromTheMidnightInt)
+                    let cellLeftMargin = ( taskStartFromTheMidnight / oneDayTerm ) * 49
+                    self.leftSideA.constant = CGFloat(cellLeftMargin)
+                }
+                
+                if realEndDate > theDayStart {
+                    if Const.calendar.isDate(realEndDate,inSameDayAs:theDayStart) {
+                        let taskEndFromTheMidnightInt = Const.calendar.dateComponents([.second],from:realEndDate,to:theDayEnd).second!
+                        let taskEndFromTheMidnight : Double = Double(taskEndFromTheMidnightInt)
+                        let cellRightMargin = ( taskEndFromTheMidnight / oneDayTerm ) * 49
+                        self.rightSideA.constant = CGFloat(cellRightMargin)
+                    }
+                }else{
+                    self.actuallyProgress.isHidden = true
+                }
+            } else{
                 self.actuallyProgress.isHidden = true
             }
-        } else{
+        }else{
             self.actuallyProgress.isHidden = true
-        }
-        
-    }
-    
-    func isInDate( _ theDate:NSDate, _ theDayStart:NSDate , _ theDayEnd : NSDate)->Bool{
-            let theDateI = theDate.timeIntervalSince1970
-            let theDayStartI = theDayStart.timeIntervalSince1970
-            let theDayEndI = theDayEnd.timeIntervalSince1970
-        
-        if theDateI >= theDayStartI && theDateI <= theDayEndI {
-            return true
-        } else {
-            return false
         }
     }
 

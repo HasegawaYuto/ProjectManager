@@ -34,7 +34,7 @@ class PopUp: UIViewController {
     var isManager:Bool = false
     var status2: Int!
     var status:Double!
-    var realStartDate:NSDate!
+    var realStartDate:Date!
     var layers:[CAShapeLayer]=[]
     
     @IBAction func handleReadyButton(_ sender: Any) {
@@ -58,7 +58,7 @@ class PopUp: UIViewController {
         let path = Const.TasksPath + "/" + self.task.id! + "/status2"
         Database.database().reference().child(path).setValue(3)
         
-        let now = NSDate.timeIntervalSinceReferenceDate
+        let now = Date().timeIntervalSince1970
         let path2 = Const.TasksPath + "/" + self.task.id! + "/realStartDate"
         Database.database().reference().child(path2).setValue(String(now))
     }
@@ -80,7 +80,7 @@ class PopUp: UIViewController {
         let path = Const.TasksPath + "/" + self.task.id! + "/status2"
         Database.database().reference().child(path).setValue(6)
         
-        let now = NSDate.timeIntervalSinceReferenceDate
+        let now = Date().timeIntervalSince1970
         let path2 = Const.TasksPath + "/" + self.task.id! + "/realEndDate"
         Database.database().reference().child(path2).setValue(String(now))
     }

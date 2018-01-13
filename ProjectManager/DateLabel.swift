@@ -22,9 +22,8 @@ class DateLabel: UICollectionViewCell {
         // Initialization code
     }
     
-    func setDayLabel( _ date:NSDate, _ term:Int){
-        let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
-        let calcDate = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: date as Date)! as NSDate
+    func setDayLabel( _ date:Date, _ term:Int){
+        let calcDate = Const.calendar.date(byAdding: .day, value: term, to: date as Date)!
         let dateFormatterY = DateFormatter()
         let dateFormatterM = DateFormatter()
         let dateFormatterD = DateFormatter()
@@ -35,22 +34,22 @@ class DateLabel: UICollectionViewCell {
         dateFormatterD.dateFormat = "d"
         dateFormatterW.dateFormat = "E"
         
-        let isStartDayOfYear = dateFormatterM.string(from: calcDate as Date) == "1" && dateFormatterD.string(from: calcDate as Date) == "1"
-        let isStartDayOfMonth = dateFormatterD.string(from: calcDate as Date) == "1"
+        let isStartDayOfYear = dateFormatterM.string(from: calcDate) == "1" && dateFormatterD.string(from: calcDate) == "1"
+        let isStartDayOfMonth = dateFormatterD.string(from: calcDate) == "1"
         if term == 0 || isStartDayOfYear {
-            self.yearL.text = dateFormatterY.string(from: calcDate as Date)
+            self.yearL.text = dateFormatterY.string(from: calcDate)
         }else{
             self.yearL.text = ""
         }
         if term == 0 || isStartDayOfMonth {
-            self.monthL.text = dateFormatterM.string(from: calcDate as Date)
+            self.monthL.text = dateFormatterM.string(from: calcDate)
         }else{
             self.monthL.text = ""
         }
-        self.dayL.text = dateFormatterD.string(from: calcDate as Date)
-        self.dayWL.text = dateFormatterW.string(from: calcDate as Date)
+        self.dayL.text = dateFormatterD.string(from: calcDate)
+        self.dayWL.text = dateFormatterW.string(from: calcDate)
         
-        let components = calendar.components(NSCalendar.Unit.weekday, from: calcDate as Date)
+        let components = Const.calendar.dateComponents([.weekday], from: calcDate)
         if components.weekday! == 1 {
             self.backgroundColor = UIColor.red
             self.yearL.textColor = UIColor.white

@@ -10,44 +10,34 @@ import Foundation
 
 
 struct Const {
+    static let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
+    
     static let ProjectsPath = "projects"
     static let UsersPath = "users"
     static let CategorysPath = "categorys"
     static let TasksPath = "tasks"
     
     static var user:Users!
+    static var project:Projects!
     static var projects:[Projects]=[]
     static var tasks:[Tasks]=[]
     static var users:[Users]=[]
     static var usersBool : Bool = false
     
-    static func getLatestMidnight(_ date:NSDate)->NSDate{
-        let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
-        let fixdate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date as Date)
-        return fixdate! as NSDate
+    static func getLatestMidnight(_ date:Date)->Date{
+        let fixdate = Const.calendar.startOfDay(for: date)
+        return fixdate
     }
-    static func getNextMidnight(_ date:NSDate)->NSDate{
-        let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
-        let fixdate = calendar.date(bySettingHour: 0, minute: 0, second: 0, of: date as Date)
-        let fixdate2 = calendar.date(byAdding: NSCalendar.Unit.day, value: 1, to: fixdate! as Date)
-        return fixdate2! as NSDate
+    static func getNextMidnight(_ date:Date)->Date{
+        let fixdate = Const.calendar.startOfDay(for: date)
+        let fixdate2 = calendar.date(byAdding: .day, value: 1, to: fixdate)
+        return fixdate2!
     }
     
-    static func getTermOfTwoDate( _ date1 : NSDate , _ date2:NSDate)->Int{
-        //print("DEBUG_PRINT:call :getTermOfTwoDate")
-        let calendar = NSCalendar(identifier: NSCalendar.Identifier.gregorian)!
+    static func getTermOfTwoDate( _ date1 : Date , _ date2:Date)->Int{
         let Date1 = Const.getLatestMidnight(date1)
-        
-        var term = 0
-        var Date0 = Date1
-        
-        while date2.timeIntervalSince1970
-            > Date0.timeIntervalSince1970
- {
-    term += 1
-            Date0 = calendar.date(byAdding: NSCalendar.Unit.day, value: term, to: Date1 as Date)! as NSDate
-        }
-        
+        let Date2 = Const.getNextMidnight(date2)
+        let term = Const.calendar.dateComponents([.day], from: Date1 , to: Date2).day!
         return term
     }
     

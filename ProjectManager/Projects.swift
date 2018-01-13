@@ -14,8 +14,8 @@ class Projects: NSObject {
     var id: String?
     var title: String?
     var detail:String?
-    var startDate: NSDate?
-    var endDate: NSDate?
+    var startDate: Date?
+    var endDate: Date?
     var members: [String:Int]=[:]
     var tasks:[String:Double]=[:]
     //var category:[String]=[]
@@ -27,20 +27,28 @@ class Projects: NSObject {
         let valueDictionary = projectdata.value as! [String: AnyObject]
         
         self.title = valueDictionary["title"] as? String
+        //print("DEBUG_PRINT:0")
         self.detail = valueDictionary["detail"] as? String
+        //print("DEBUG_PRINT:1")
         
         let sDate = valueDictionary["startDate"] as? String
-        self.startDate = NSDate(timeIntervalSince1970: TimeInterval(sDate!)!)
+        let sDateD : Double = Double(sDate!)!
+        self.startDate = Date(timeIntervalSince1970: TimeInterval(sDateD))
+        //print("DEBUG_PRINT:2")
         
         let eDate = valueDictionary["endDate"] as? String
-        self.endDate = NSDate(timeIntervalSince1970: TimeInterval(eDate!)!)
+        let eDateD : Double = Double(eDate!)!
+        self.endDate = Date(timeIntervalSince1970: TimeInterval(eDateD))
+        //print("DEBUG_PRINT:3")
         
         if let members = valueDictionary["members"] as? [String:Int] {
             self.members = members
+            //print("DEBUG_PRINT:4")
         }
         
         if let tasks = valueDictionary["tasks"] as? [String:Double] {
             self.tasks = tasks
+            //print("DEBUG_PRINT:5")
         }
     }
 }

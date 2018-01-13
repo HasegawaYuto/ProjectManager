@@ -69,9 +69,9 @@ class PersonalTaskController: UIViewController {
             switch(self.sortContent){
             case 0:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
                 }
             case 1:
                 if self.sortStyle == 0 {
@@ -87,9 +87,9 @@ class PersonalTaskController: UIViewController {
                 }
             default:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
+                    self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
                 }
             }
             self.taskT.reloadData()
@@ -281,9 +281,25 @@ extension PersonalTaskController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if self.tasks.count > 0{
-        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970 })[0]
-        let maxTask = self.tasks.sorted(by:{$0.endDate!.timeIntervalSince1970 > $1.endDate!.timeIntervalSince1970 })[0]
-        return Const.getTermOfTwoDate(minTask.startDate!,maxTask.endDate!)
+        let now = Date()
+        let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
+        let maxTask = self.tasks.sorted(by:{$0.endDate! > $1.endDate! })[0]
+        var minDate :Date!
+        var maxDate : Date!
+            
+        if minTask.startDate! < now {
+            minDate = minTask.startDate!
+        }else{
+            minDate = now
+        }
+         
+        if maxTask.endDate! > now {
+            maxDate = minTask.startDate!
+        }else{
+            maxDate = now
+        }
+            
+        return Const.getTermOfTwoDate(minDate,maxDate)
         } else {
             return 0
         }
@@ -298,17 +314,27 @@ extension PersonalTaskController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let minTask = self.tasks.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970 })[0]
+        let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
+        let now = Date()
+        
+        var minDate :Date!
+        
+        if minTask.startDate! < now {
+            minDate = minTask.startDate!
+        }else{
+            minDate = now
+        }
         if collectionView.restorationIdentifier == "dateT" {
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateLabel",for: indexPath as IndexPath) as! DateLabel
-            cell.setDayLabel(minTask.startDate!,indexPath.item)
+            cell.setDayLabel(minDate,indexPath.item)
             return cell
             
         } else {
+            print("DEBUG_PRINT:section-item:\(indexPath.section)-\(indexPath.item)")
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProgressCell",for: indexPath as IndexPath) as! ProgressCell
             let theTask = self.tasks[indexPath.section]
-            cell.setProgress(minTask.startDate!,theTask,indexPath.item)
+            cell.setProgress(minDate,theTask,indexPath.item)
             
             let flag = theTask.status2! != 0 && theTask.status2! != 4 && theTask.status2! != 6 && theTask.status2! != 2
             let theProject = Const.projects.filter({ $0.id == theTask.project })[0]

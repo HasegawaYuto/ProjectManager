@@ -1014,7 +1014,7 @@
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="P6W-B6-OHX" sceneMemberID="viewController">
                     <tabBarItem key="tabBarItem" title="Personal" image="man-7" selectedImage="man-7" id="oQN-4N-yvH"/>
                     <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" misplaced="YES" id="Jl4-y8-Kf4">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="Jl4-y8-Kf4">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>

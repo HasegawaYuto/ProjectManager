@@ -29,9 +29,10 @@ class ProjectTaskController: UIViewController {
 
     var isManager:Bool = false
     var projectId :String!
-    var startProjectDate:NSDate!
-    var endProjectDate:NSDate!
+    var startProjectDate:Date!
+    var endProjectDate:Date!
     var observe : Bool = false
+    var dataObserve : Bool = false
     
     var tasks:[Tasks]=[]
     var users :[Users]=[]
@@ -77,12 +78,12 @@ class ProjectTaskController: UIViewController {
     
     
     func superReload(){
-        let theProject = Const.projects.filter({$0.id == self.projectId})[0]
         let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
         let users = Const.users.filter({$0.projects[self.projectId]! >= 1})
-        let flag1 = tasksFilter.count == theProject.tasks.count
-        let flag2 = users.count == theProject.members.count
+        let flag1 = tasksFilter.count == Const.project.tasks.count
+        let flag2 = users.count == Const.project.members.count
         if flag1 && flag2 {
+            print("DEBUG_PRINT:reload")
             self.taskTable.reloadData()
             self.dateL.reloadData()
             self.dateT.reloadData()
@@ -106,53 +107,10 @@ class ProjectTaskController: UIViewController {
     
     
     override func viewWillAppear(_ animated: Bool) {
+        print("DEBUG_PRINT:appear")
         super.viewWillAppear(animated)
         
         if !self.observe {
-            
-            let taskRef = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId!)
-            
-            taskRef.observe(.childAdded,with:{snapshot in
-                let theTask = Tasks(snapshot)
-                Const.addTaskData(theTask)
-                self.superReload()
-            })
-            
-            
-            taskRef.observe(.childChanged,with:{snapshot in
-                let theTask = Tasks(snapshot)
-                Const.reloadTaskData(theTask)
-                self.superReload()
-            })
-            
-            
-            taskRef.observe(.childRemoved,with:{snapshot in
-                let theTask = Tasks(snapshot)
-                Const.removeTaskData(theTask)
-                self.superReload()
-            })
-            
-            
-            let userRef = Database.database().reference().child(Const.UsersPath).queryOrdered(byChild: "projects/" + self.projectId! ).queryStarting(atValue: 1 )
-            
-            userRef.observe(.childAdded,with:{snapshot in
-                let theUser = Users(snapshot)
-                Const.addUserData(theUser)
-                self.superReload()
-            })
-            
-            userRef.observe(.childChanged,with:{snapshot in
-                let theUser = Users(snapshot)
-                Const.reloadUserData(theUser)
-                self.superReload()
-            })
-            
-            userRef.observe(.childRemoved,with:{snapshot in
-                let theUser = Users(snapshot)
-                Const.removeUserData(theUser)
-                self.superReload()
-            })
-            
             let setPath = Const.ProjectsPath + "/" + self.projectId
             let projectRef = Database.database().reference().child(setPath)
             projectRef.observe(.value,with:{snapshot in
@@ -163,6 +121,8 @@ class ProjectTaskController: UIViewController {
                 self.startProjectDate = theProject.startDate!
                 self.endProjectDate = theProject.endDate!
                 
+                Const.project = theProject
+                
                 self.isManager = theProject.members[Const.user.id!]! == 2
                 if self.isManager {
                     self.addTaskButton.isEnabled = true
@@ -171,6 +131,53 @@ class ProjectTaskController: UIViewController {
                 }
                 
                 self.superReload()
+                
+                if self.dataObserve {
+                
+                let taskRef = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId!)
+                
+                taskRef.observe(.childAdded,with:{snapshot in
+                    let theTask = Tasks(snapshot)
+                    Const.addTaskData(theTask)
+                    self.superReload()
+                })
+                
+                
+                taskRef.observe(.childChanged,with:{snapshot in
+                    let theTask = Tasks(snapshot)
+                    Const.reloadTaskData(theTask)
+                    self.superReload()
+                })
+                
+                
+                taskRef.observe(.childRemoved,with:{snapshot in
+                    let theTask = Tasks(snapshot)
+                    Const.removeTaskData(theTask)
+                    self.superReload()
+                })
+                
+                
+                let userRef = Database.database().reference().child(Const.UsersPath).queryOrdered(byChild: "projects/" + self.projectId! ).queryStarting(atValue: 1 )
+                
+                userRef.observe(.childAdded,with:{snapshot in
+                    let theUser = Users(snapshot)
+                    Const.addUserData(theUser)
+                    self.superReload()
+                })
+                
+                userRef.observe(.childChanged,with:{snapshot in
+                    let theUser = Users(snapshot)
+                    Const.reloadUserData(theUser)
+                    self.superReload()
+                })
+                
+                userRef.observe(.childRemoved,with:{snapshot in
+                    let theUser = Users(snapshot)
+                    Const.removeUserData(theUser)
+                    self.superReload()
+                })
+                    self.dataObserve = true
+                }
             })
             
             self.observe = true
@@ -224,6 +231,7 @@ class ProjectTaskController: UIViewController {
 
 extension ProjectTaskController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        print("DEBUG_PRINT:viewForHeaderInSection")
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell") as! TableViewCell
         cell.type = 0
         cell.setView()
@@ -251,6 +259,7 @@ extension ProjectTaskController: UITableViewDelegate {
 
 extension ProjectTaskController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        print("DEBUG_PRINT:Table cellForRowAt")
         let cell = tableView.dequeueReusableCell(withIdentifier: "TaskCell", for: indexPath as IndexPath) as! TableViewCell
         let theTask = self.tasks[indexPath.row]
         cell.type = 0
@@ -260,14 +269,17 @@ extension ProjectTaskController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        print("DEBUG_PRINT:Table numberOfRowsInSection")
         let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
+        print("DEBUG_PRINT:ch1")
         self.users = Const.users.filter({$0.projects[self.projectId!]! >= 1})
+        print("DEBUG_PRINT:ch2")
         switch(self.sortContent){
         case 0:
             if self.sortStyle == 0 {
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
             }else{
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
             }
         case 1:
             if self.sortStyle == 0 {
@@ -283,11 +295,12 @@ extension ProjectTaskController: UITableViewDataSource {
             }
         default:
             if self.sortStyle == 0 {
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 < $1.startDate!.timeIntervalSince1970})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
             }else{
-                self.tasks = tasksFilter.sorted(by:{$0.startDate!.timeIntervalSince1970 > $1.startDate!.timeIntervalSince1970})
+                self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
             }
         }
+        print("DEBUG_PRINT:ch3")
         return self.tasks.count
     }
 }
@@ -300,11 +313,13 @@ extension ProjectTaskController: UITableViewDataSource {
 extension ProjectTaskController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        print("DEBUG_PRINT:collection numberOfItemsInSection")
         let theProject = Const.projects.filter({$0.id == self.projectId})[0]
         return Const.getTermOfTwoDate(theProject.startDate!,theProject.endDate!)
     }
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
+        print("DEBUG_PRINT:collection numberOfSections")
         if collectionView.restorationIdentifier == "Header" {
             return 1
         } else {
@@ -313,6 +328,7 @@ extension ProjectTaskController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        print("DEBUG_PRINT:collection cellForItemAt")
         let theProject = Const.projects.filter({$0.id == self.projectId})[0]
         if collectionView.restorationIdentifier == "Header" {
         
