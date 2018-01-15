@@ -112,7 +112,7 @@ class MemberController: UIViewController, UITableViewDelegate, UITableViewDataSo
         if !flag {
             typeButton.backgroundColor = UIColor.blue
         }else{
-            typeButton.backgroundColor = UIColor.clear
+            typeButton.backgroundColor = UIColor.green
         }
         
         let excludeButton = UITableViewRowAction(style: .normal, title: "exclude") { (action, index) -> Void in
