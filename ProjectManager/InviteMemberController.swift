@@ -18,18 +18,23 @@ class InviteMemberController: UIViewController, UISearchBarDelegate {
     
     var projectId :String!
     var searchUserId :String!
+    var isInvitable : Bool = false
     
     @IBAction func handleInviteButton(_ sender: Any) {
         print("DEBUG_PRINT:call handleInviteButton")
-        let userPath = Const.UsersPath + "/" + self.searchUserId + "/projects/" + self.projectId
-        let userPathRef = Database.database().reference().child(userPath)
+        if isInvitable {
+            let userPath = Const.UsersPath + "/" + self.searchUserId + "/projects/" + self.projectId
+            let userPathRef = Database.database().reference().child(userPath)
         
-        let projectPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + self.searchUserId
-        let projectPathRef = Database.database().reference().child(projectPath)
+            let projectPath = Const.ProjectsPath + "/" + self.projectId + "/members/" + self.searchUserId
+            let projectPathRef = Database.database().reference().child(projectPath)
         
-        userPathRef.setValue(0)
-        projectPathRef.setValue(0)
-        self.userL.text = "Complete invitation"
+            userPathRef.setValue(0)
+            projectPathRef.setValue(0)
+            self.userL.text = "Complete invitation"
+        }else{
+            self.userL.text = "Already invited"
+        }
         self.findL.isHidden = true
     }
     
@@ -45,14 +50,15 @@ class InviteMemberController: UIViewController, UISearchBarDelegate {
             let datas = snapshot.children.allObjects as [Any]
             if datas.count > 0 {
                 let theUser = Users(datas[0] as! DataSnapshot)
-                print("DEBUG_PRINT:set theUser:\(theUser)")
+                //print("DEBUG_PRINT:set theUser:\(theUser)")
                 self.userL.text = theUser.name!
                 self.searchUserId = theUser.id!
-                print("DEBUG_PRINT:self.searchUserId:\(self.searchUserId!)")
+                //print("DEBUG_PRINT:self.searchUserId:\(self.searchUserId!)")
                 self.userL.isHidden = false
                 self.findL.isHidden = false
                 self.inviteButton.isHidden = false
                 self.inviteButton.isEnabled = true
+                self.isInvitable = theUser.projects[self.projectId] == nil
             } else {
                 self.userL.text = "No such user"
                 self.userL.isHidden = false
