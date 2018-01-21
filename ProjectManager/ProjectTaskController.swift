@@ -80,8 +80,16 @@ class ProjectTaskController: UIViewController {
     func superReload(){
         let tasksFilter = Const.tasks.filter({$0.project == self.projectId})
         let users = Const.users.filter({$0.projects[self.projectId]! >= 1})
+        let projectMember = Const.project.members.filter({$0.1 >= 1})
         let flag1 = tasksFilter.count == Const.project.tasks.count
-        let flag2 = users.count == Const.project.members.count
+        let flag2 = users.count == projectMember.count
+        print("DEBUG_PRINT:flag1:\(flag1)")
+        print("DEBUG_PRINT:flag2:\(flag2)")
+        print("DEBUG_PRINT:tasksFilter.count:\(tasksFilter.count)")
+        print("DEBUG_PRINT:Const.project.tasks.count:\(Const.project.tasks.count)")
+        print("DEBUG_PRINT:users.count:\(users.count)")
+        print("DEBUG_PRINT:Const.project.members.count:\(Const.project.members.count)")
+
         if flag1 && flag2 {
             print("DEBUG_PRINT:reload")
             self.taskTable.reloadData()
@@ -132,11 +140,12 @@ class ProjectTaskController: UIViewController {
                 
                 self.superReload()
                 
-                if self.dataObserve {
+                if !self.dataObserve {
                 
                 let taskRef = Database.database().reference().child(Const.TasksPath).queryOrdered(byChild:"project").queryEqual(toValue:self.projectId!)
                 
                 taskRef.observe(.childAdded,with:{snapshot in
+                    print("DEBUG_PRINT:task add")
                     let theTask = Tasks(snapshot)
                     Const.addTaskData(theTask)
                     self.superReload()
@@ -190,6 +199,7 @@ class ProjectTaskController: UIViewController {
             Database.database().reference().child(Const.UsersPath).removeAllObservers()
             Database.database().reference().child(Const.ProjectsPath).child(self.projectId!).removeAllObservers()
             self.observe = false
+            self.dataObserve = false
         }
         
         super.viewWillDisappear(animated)
@@ -300,7 +310,7 @@ extension ProjectTaskController: UITableViewDataSource {
                 self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
             }
         }
-        print("DEBUG_PRINT:ch3")
+        print("DEBUG_PRINT:ch3:\(self.tasks.count)")
         return self.tasks.count
     }
 }

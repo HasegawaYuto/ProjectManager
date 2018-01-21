@@ -230,12 +230,13 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
             let userProjectsRef = Database.database().reference().child(path2)
             userProjectsRef.removeValue()
             
-            var taskids :[String]=[]
+            //var taskids :[String]=[]
             for taskid in self.selectProjects[indexPath.row].tasks.keys {
                 for taskid2 in Const.user.tasks.keys {
                     if taskid == taskid2 {
                         Database.database().reference().child(Const.UsersPath + "/" + Const.user.id! + "/tasks/" + taskid).removeValue()
-                        taskids.append(taskid)
+                        Database.database().reference().child(Const.TasksPath + "/" + taskid + "/chargers/" + Const.user.id!).removeValue()
+                        //taskids.append(taskid)
                     }
                 }
             }

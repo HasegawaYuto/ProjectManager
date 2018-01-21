@@ -23,6 +23,7 @@ class PopUp: UIViewController {
     @IBOutlet weak var reviewButton: UIButton!
     @IBOutlet weak var finishButton: UIButton!
     @IBOutlet weak var debugButton: UIButton!
+    @IBOutlet weak var stopButton: UIButton!
 
     @IBOutlet weak var readyHeight: NSLayoutConstraint!
     @IBOutlet weak var initHeight: NSLayoutConstraint!
@@ -105,9 +106,11 @@ class PopUp: UIViewController {
                 print("DEBUG_PRINT:not status2 != 2")
                 self.slider.isHidden = true
                 self.status2 = 2
+                self.stopButton.setTitle("Execution", for: .normal)
                 Database.database().reference().child(path).setValue(2)
             } else {
                 print("DEBUG_PRINT:not status2 == 2")
+                self.stopButton.setTitle("Stop", for: .normal)
                 self.slider.value = Float(self.status!)
                 if self.status! == 0.0 && self.realStartDate == nil {
                     print("DEBUG_PRINT:not status == 0.0 not realStateDate")

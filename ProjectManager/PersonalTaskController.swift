@@ -22,8 +22,8 @@ class PersonalTaskController: UIViewController {
     @IBOutlet weak var sc: UISegmentedControl!
     
     var userId :String!
-    var startTasksDate:NSDate!
-    var endTasksDate:NSDate!
+    //var startTasksDate:Date!
+    //var endTasksDate:Date!
     var observeUserBool : Bool = false
     var observe : Bool = false
     
@@ -32,6 +32,10 @@ class PersonalTaskController: UIViewController {
     
     var sortStyle :Int = 0
     var sortContent:Int = 0
+    
+    //var now :Date!
+    var minDate :Date!
+    var maxDate : Date!
 
     
     @IBAction func sortContents(_ sender: Any) {
@@ -60,38 +64,56 @@ class PersonalTaskController: UIViewController {
     */
     
     func superReload(){
-        let tasksFilter = Const.tasks.filter({$0.chargers[Const.user.id!] != nil })
+        let tasksFilter = Const.tasks.filter({$0.chargers[Const.user.id!] != nil})
         let projects = Const.projects.filter({$0.members[Const.user.id!]! >= 1})
         let flag1 = tasksFilter.count == Const.user.tasks.count
         let flag2 = projects.count == Const.user.projects.count
         if flag1 && flag2 {
             self.projects = Const.projects.filter({$0.members[Const.user.id!]! >= 1})
+            let taskFilter2 = tasksFilter.filter({$0.status2! < 6})
             switch(self.sortContent){
             case 0:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
+                    self.tasks = taskFilter2.sorted(by:{$0.startDate! < $1.startDate!})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
+                    self.tasks = taskFilter2.sorted(by:{$0.startDate! > $1.startDate!})
                 }
             case 1:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.project! < $1.project! })
+                    self.tasks = taskFilter2.sorted(by:{$0.project! < $1.project! })
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.project! > $1.project! })
+                    self.tasks = taskFilter2.sorted(by:{$0.project! > $1.project! })
                 }
             case 2:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.importance! < $1.importance! })
+                    self.tasks = taskFilter2.sorted(by:{$0.importance! < $1.importance! })
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.importance! > $1.importance! })
+                    self.tasks = taskFilter2.sorted(by:{$0.importance! > $1.importance! })
                 }
             default:
                 if self.sortStyle == 0 {
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate! < $1.startDate!})
+                    self.tasks = taskFilter2.sorted(by:{$0.startDate! < $1.startDate!})
                 }else{
-                    self.tasks = tasksFilter.sorted(by:{$0.startDate! > $1.startDate!})
+                    self.tasks = taskFilter2.sorted(by:{$0.startDate! > $1.startDate!})
                 }
             }
+            
+            let now = Date()
+            let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
+            let maxTask = self.tasks.sorted(by:{$0.endDate! > $1.endDate! })[0]
+            
+            if minTask.startDate! < now {
+                self.minDate = minTask.startDate!
+            }else{
+                self.minDate = now
+            }
+            
+            if maxTask.endDate! > now {
+                self.maxDate = minTask.startDate!
+            }else{
+                self.maxDate = now
+            }
+            
             self.taskT.reloadData()
             self.dateT.reloadData()
             self.progressT.reloadData()
@@ -281,25 +303,27 @@ extension PersonalTaskController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if self.tasks.count > 0{
-        let now = Date()
+        /*
+        //let now = Date()
         let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
         let maxTask = self.tasks.sorted(by:{$0.endDate! > $1.endDate! })[0]
         var minDate :Date!
         var maxDate : Date!
             
-        if minTask.startDate! < now {
+        if minTask.startDate! < self.now {
             minDate = minTask.startDate!
         }else{
-            minDate = now
+            minDate = self.now
         }
          
-        if maxTask.endDate! > now {
+        if maxTask.endDate! > self.now {
             maxDate = minTask.startDate!
         }else{
-            maxDate = now
+            maxDate = self.now
         }
+        */
             
-        return Const.getTermOfTwoDate(minDate,maxDate)
+        return Const.getTermOfTwoDate(self.minDate,self.maxDate)
         } else {
             return 0
         }
@@ -314,27 +338,28 @@ extension PersonalTaskController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
-        let now = Date()
-        
+        //let minTask = self.tasks.sorted(by:{$0.startDate! < $1.startDate! })[0]
+        //let now = Date()
+        /*
         var minDate :Date!
         
-        if minTask.startDate! < now {
+        if minTask.startDate! < self.now {
             minDate = minTask.startDate!
         }else{
-            minDate = now
+            minDate = self.now
         }
+         */
         if collectionView.restorationIdentifier == "dateT" {
             
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "DateLabel",for: indexPath as IndexPath) as! DateLabel
-            cell.setDayLabel(minDate,indexPath.item)
+            cell.setDayLabel(self.minDate,indexPath.item)
             return cell
             
         } else {
-            print("DEBUG_PRINT:section-item:\(indexPath.section)-\(indexPath.item)")
+            //print("DEBUG_PRINT:section-item:\(indexPath.section)-\(indexPath.item)")
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProgressCell",for: indexPath as IndexPath) as! ProgressCell
             let theTask = self.tasks[indexPath.section]
-            cell.setProgress(minDate,theTask,indexPath.item)
+            cell.setProgress(self.minDate,theTask,indexPath.item)
             
             let flag = theTask.status2! != 0 && theTask.status2! != 4 && theTask.status2! != 6 && theTask.status2! != 2
             let theProject = Const.projects.filter({ $0.id == theTask.project })[0]
