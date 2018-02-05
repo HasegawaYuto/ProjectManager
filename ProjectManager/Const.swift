@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 struct Const {
     static let calendar = Calendar(identifier: Calendar.Identifier.gregorian)
     

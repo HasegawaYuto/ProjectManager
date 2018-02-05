@@ -456,7 +456,7 @@
 				DEVELOPMENT_TEAM = 83ZWPRU665;
 				INFOPLIST_FILE = ProjectManager/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = jp.techacademy.yuuto.hasegawa.ProjectManager;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.yuuto.hasegawa.hase3desu.ProjectManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -470,7 +470,7 @@
 				DEVELOPMENT_TEAM = 83ZWPRU665;
 				INFOPLIST_FILE = ProjectManager/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = jp.techacademy.yuuto.hasegawa.ProjectManager;
+				PRODUCT_BUNDLE_IDENTIFIER = jp.yuuto.hasegawa.hase3desu.ProjectManager;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

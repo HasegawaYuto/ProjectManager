@@ -11,12 +11,15 @@ import Firebase
 import FirebaseDatabase
 import FirebaseAuth
 import PopupDialog
+import GoogleMobileAds
 
 class PersonalTaskController: UIViewController {
     @IBOutlet weak var taskT: UITableView!
     @IBOutlet weak var dateT: UICollectionView!
     @IBOutlet weak var progressT: UICollectionView!
     //@IBOutlet weak var notificationButton: UIBarButtonItem!
+    @IBOutlet weak var badView: GADBannerView!
+    
     
     @IBOutlet weak var sortButton: UIButton!
     @IBOutlet weak var sc: UISegmentedControl!
@@ -144,7 +147,9 @@ class PersonalTaskController: UIViewController {
         let nib3 = UINib(nibName: "ProgressCell", bundle: nil)
         self.progressT.register(nib3,forCellWithReuseIdentifier: "ProgressCell")
         
-
+        self.badView.adUnitID = "ca-app-pub-2140888928025833/9599348571"
+        self.badView.rootViewController = self
+        self.badView.load(GADRequest())
     }
 
     override func didReceiveMemoryWarning() {

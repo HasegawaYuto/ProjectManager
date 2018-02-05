@@ -10,11 +10,15 @@ import UIKit
 import Firebase
 import FirebaseDatabase
 import FirebaseAuth
+import GoogleMobileAds
 
 class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDelegate, UITableViewDataSource  {
     @IBOutlet weak var userNameTF: UITextField!
     @IBOutlet weak var sc: UISegmentedControl!
     @IBOutlet weak var tableV: UITableView!
+    
+    @IBOutlet weak var badView: GADBannerView!
+
     
     var setPath :String?
     //var projectId : String?
@@ -69,7 +73,12 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
         self.userNameTF.delegate = self
         self.tableV.delegate = self
         self.tableV.dataSource = self
-        //print("DEBUG_PRINT:call viewDidload personal")
+        
+        self.badView.adUnitID = "ca-app-pub-2140888928025833/9599348571"
+        self.badView.rootViewController = self
+        self.badView.load(GADRequest())
+        //print("DEBUG_PRINT:\(self.badView)")
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -82,10 +91,7 @@ class PersonalController: UIViewController, UITextFieldDelegate, UITableViewDele
         }
     }
     
-    
-    
     override func viewWillAppear(_ animated: Bool) {
-        print("DEBUG_PRINT:personal viewWillAppear")
         super.viewWillAppear(animated)
         if let user = Auth.auth().currentUser {
             let userRef = Database.database().reference().child(Const.UsersPath).child(user.uid)

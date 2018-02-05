@@ -11,6 +11,7 @@ import Firebase
 import FirebaseDatabase
 import FirebaseAuth
 import PopupDialog
+import GoogleMobileAds
 
 class ProjectTaskController: UIViewController {
     
@@ -18,6 +19,8 @@ class ProjectTaskController: UIViewController {
     @IBOutlet weak var addTaskButton: UIBarButtonItem!
     @IBOutlet weak var dateT: UICollectionView!
     @IBOutlet weak var dateL: UICollectionView!
+    @IBOutlet weak var badView: GADBannerView!
+    
 
     @IBOutlet weak var taskTable: UITableView!
     @IBOutlet weak var projectProgress: UIProgressView!
@@ -191,6 +194,10 @@ class ProjectTaskController: UIViewController {
             
             self.observe = true
         }
+        
+        self.badView.adUnitID = "ca-app-pub-2140888928025833/9599348571"
+        self.badView.rootViewController = self
+        self.badView.load(GADRequest())
     }
     
     override func viewWillDisappear(_ animated: Bool){
@@ -351,7 +358,7 @@ extension ProjectTaskController: UICollectionViewDataSource {
         let theTask = self.tasks[indexPath.section]
         cell.setProgress(theProject.startDate!,theTask,indexPath.item)
         let flag1 = theTask.chargers[Const.user.id!] != nil && theTask.chargers[Const.user.id!]! == true
-        let flag2 = theTask.status2! != 0 && theTask.status2! != 4 && theTask.status2! != 6 && theTask.status2! != 2
+        let flag2 = theTask.status2! != 0 && theTask.status2! != 6 && theTask.status2! != 2
         if self.isManager || (flag1 && flag2){
             cell.isUserInteractionEnabled = true
         } else{
